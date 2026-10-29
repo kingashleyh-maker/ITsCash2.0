@@ -113,3 +113,5 @@ Students with no existing assessment receive a clearly marked ₱20,000 sample t
 Tuition first name, last name, student ID and email start from the profile and can be edited before payment. Changes remain in the review draft and appear on the receipt; the payment remains associated with the signed-in student account. If the entered student ID differs, the receipt also identifies the account student number. Existing profile information is not silently replaced.
 
 The store header no longer contains the Login/Store/Cashier/Proware shortcuts or Login page button. Student dashboard navigation and account controls remain available.
+# ITsCash2.0
+ITsCash2.0

@@ -1,0 +1,10 @@
+.top-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+}
+.top-icon svg {
+  display: block;
+}

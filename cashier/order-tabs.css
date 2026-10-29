@@ -1,0 +1,29 @@
+.om-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 0 0 18px;
+}
+.om-tabs button,
+.om-status-buttons button {
+  border: 1px solid #334154;
+  background: #151c27;
+  color: #aebdd0;
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+.om-tabs button.active,
+.om-status-buttons button.active {
+  background: #10352b;
+  border-color: #235544;
+  color: #59d7ac;
+}
+.om-status-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.om button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}

@@ -1,0 +1,182 @@
+#payApp {
+  position: fixed;
+  inset: 0;
+  z-index: 160;
+  overflow: auto;
+  background: #f1f5f8;
+  color: #193348;
+  font:
+    14px/1.5 "Segoe UI",
+    sans-serif;
+}
+#payApp[hidden] {
+  display: none;
+}
+#payApp * {
+  box-sizing: border-box;
+}
+#payApp button,
+#payApp input,
+#payApp select,
+#payApp textarea {
+  font: inherit;
+}
+#payApp .pw-top {
+  background: linear-gradient(110deg, #102b43, #114c56);
+}
+#payApp .pw-btn {
+  cursor: pointer;
+}
+#payApp .pw-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+#payApp input:read-only {
+  background: #eef3f6;
+}
+.pay-amount {
+  font-size: 30px;
+  font-weight: 850;
+  letter-spacing: -1px;
+}
+.pay-kicker {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #567c8e;
+}
+.pay-status {
+  font-size: 11px;
+  padding: 4px 9px;
+  border-radius: 20px;
+  background: #e6eef5;
+  color: #3e617b;
+  display: inline-block;
+  font-weight: 750;
+}
+.pay-status.Successful,
+.pay-status.Paid,
+.pay-status.Claimed {
+  background: #e1f4eb;
+  color: #187253;
+}
+.pay-status.Failed,
+.pay-status.Cancelled,
+.pay-status.Refunded {
+  background: #fce8e8;
+  color: #a73942;
+}
+.pay-status.Pending {
+  background: #fff1cf;
+  color: #8c681c;
+}
+.pay-unread {
+  border-left: 4px solid #087b75;
+}
+.pay-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 9px 0;
+  border-bottom: 1px solid #edf1f5;
+}
+.pay-notice {
+  background: #e7f5f3;
+  border: 1px solid #b8ddd7;
+  border-radius: 9px;
+  padding: 12px 15px;
+  margin: 12px 0;
+}
+.pay-receipt {
+  font-size: 12px;
+  max-width: 720px;
+  margin: auto;
+}
+.pay-receipt dl {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 10px;
+}
+.pay-receipt dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.pay-receipt h2 {
+  font-size: 24px;
+}
+.pay-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.pay-check {
+  padding: 10px;
+  background: #f4f7f9;
+  border-radius: 8px;
+}
+.pay-check input {
+  width: auto;
+  margin-right: 8px;
+}
+.pay-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+@media (max-width: 700px) {
+  #payApp .pw-grid,
+  #payApp .pw-form {
+    grid-template-columns: 1fr;
+  }
+  #payApp .pw-top {
+    padding: 15px;
+  }
+  #payApp .pw-wrap {
+    padding: 14px;
+  }
+  .pay-receipt dl {
+    grid-template-columns: 115px 1fr;
+  }
+  .pay-amount {
+    font-size: 25px;
+  }
+}
+.uniform-shop-actions .pw-entry {
+  background: #0d5f5d;
+  border-color: #318b82;
+  color: #e9fffb;
+}
+.uniform-shop-actions .pw-entry:hover {
+  background: #13766d;
+  color: #fff;
+}
+/* Tuition details template: profile identity, campus/year and installment review. */
+#payApp .tuition-payment-card{width:min(680px,100%);margin:12px auto;background:#fff;border:1px solid #dbe5ef;border-radius:17px;padding:32px;box-shadow:0 1px 2px #12304a08;color:#172e43}
+#payApp .tuition-payment-card>header{border-bottom:1px solid #e7edf3;padding-bottom:21px;margin-bottom:25px}
+#payApp .tuition-payment-card h2{font-size:24px;line-height:1.3;font-weight:750;margin:0 0 5px;color:#173049}
+#payApp .tuition-payment-card>header p{font-size:14px;line-height:1.6;color:#4d6882;margin:0}
+#payApp .tuition-form-group{margin-bottom:24px;min-width:0}
+#payApp .tuition-form-group>label{display:block;font-weight:700;font-size:14px;color:#162e46;margin-bottom:7px}
+#payApp .tuition-form-columns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+#payApp .tuition-payment-card input,#payApp .tuition-payment-card select{width:100%;max-width:100%;min-height:45px;border:1px solid #b8cade;border-radius:8px;padding:10px 13px;background:#fff;color:#19364e;font:14px/1.4 'Segoe UI',sans-serif}
+#payApp .tuition-payment-card input:read-only{background:#f8fafc;color:#2b4961}
+#payApp .tuition-payment-card input::placeholder{color:#637b91;opacity:1}
+#payApp .tuition-payment-card input:focus,#payApp .tuition-payment-card select:focus{outline:2px solid #186b9a;outline-offset:2px}
+#payApp .tuition-form-group small{display:block;font-size:12px;color:#4f6b83;margin-top:5px}
+#payApp .tuition-form-narrow{max-width:450px}
+#payApp .tuition-balance-note{font-size:12px;color:#435f77;padding:12px;background:#f3f7fb;border-radius:6px;margin:0 0 22px}
+#payApp .tuition-payment-card form>footer{border-top:1px solid #e7edf3;display:flex;align-items:center;justify-content:flex-end;gap:20px;padding-top:17px}
+#payApp .tuition-cancel{border:0;background:transparent;color:#354f67;font-size:13px;font-weight:700;padding:12px;cursor:pointer}
+#payApp .tuition-proceed{border:1px solid #0d2948;background:#0d2948;color:#fff;border-radius:7px;padding:12px 20px;min-height:44px;font-size:13px;font-weight:750;cursor:pointer}
+#payApp .tuition-proceed:hover{background:#184566}
+#payApp .tuition-review-summary{background:#eff6fc;border:1px solid #c8ddec;border-radius:9px;padding:16px;margin:18px 0;color:#1d415d}
+#payApp .tuition-review-summary p{font-size:13px;line-height:1.7;margin:7px 0 12px}
+#payApp .tuition-status-card{text-align:center}
+#payApp .tuition-status-card .pay-line{text-align:left;overflow-wrap:anywhere}
+#payApp .tuition-status-card>p{color:#4d6882;line-height:1.7}
+#payApp .tuition-status-symbol{display:grid;place-items:center;width:58px;height:58px;margin:0 auto 18px;background:#fff1cd;color:#8b5e04;font-size:34px;border-radius:50%}
+#payApp .tuition-receipt-confirmed{max-width:720px;margin:0 auto 20px;background:#e7f8ee;color:#116044;padding:15px 18px;border:1px solid #b8deca;border-radius:10px}
+#payApp .tuition-receipt-confirmed strong{display:block;font-size:18px}
+#payApp .tuition-receipt-confirmed span{display:block;font-size:12px;margin-top:4px}
+@media(max-width:600px){#payApp .tuition-payment-card{padding:22px 18px;margin:0 auto;border-radius:12px}#payApp .tuition-payment-card h2{font-size:22px}#payApp .tuition-form-columns{grid-template-columns:minmax(0,1fr);gap:0}#payApp .tuition-form-group .tuition-form-columns{gap:12px}#payApp .tuition-form-narrow{max-width:none}#payApp .tuition-payment-card form>footer{gap:10px;flex-wrap:wrap}#payApp .tuition-proceed{flex:1;min-width:180px}}

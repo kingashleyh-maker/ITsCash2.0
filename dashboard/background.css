@@ -1,0 +1,76 @@
+/* Store background matches the cashier workspace. */
+.learning-app.is-shopping {
+  background: #0c1017;
+  color: #e5edf7;
+}
+.learning-app.is-shopping .learning-workspace,
+.learning-shop {
+  background: #0c1017;
+}
+.learning-shop {
+  --ink: #e5edf7;
+  --muted: #8d9cb1;
+  --line: #29313f;
+}
+.uniform-shop-head,
+.store-navigation {
+  border-color: #29313f;
+}
+.uniform-shop-head h1,
+.uniform-product-header h2 {
+  color: #e5edf7;
+}
+.uniform-shop-actions button,
+.store-navigation button {
+  color: #aebdd0;
+}
+.uniform-shop-actions button:hover,
+.store-navigation button:hover {
+  background: #182231;
+  color: #fff;
+}
+.uniform-category-tabs button {
+  color: #8d9cb1;
+}
+.uniform-category-tabs button.active {
+  color: #29b9ec;
+  border-color: #29b9ec;
+}
+.uniform-result-line {
+  color: #8d9cb1;
+}
+.uniform-shop-search {
+  background: #151c27;
+  border-color: #334154;
+  color: #aebdd0;
+}
+.uniform-shop-search input {
+  color: #e5edf7;
+}
+.uniform-shop-search input::placeholder {
+  color: #8d9cb1;
+}
+.uniform-filter-options select {
+  background: #151c27;
+  border-color: #334154;
+  color: #e5edf7;
+}
+.store-feature {
+  border-color: #29313f;
+}
+.feature-caption {
+  background: #151c27;
+  color: #e5edf7;
+}
+.store-values,
+.store-footer,
+.store-announcement {
+  background: #0c1017;
+}
+.store-values {
+  border-top: 1px solid #29313f;
+}
+.store-value {
+  background: #151c27;
+  border-color: #29313f;
+}

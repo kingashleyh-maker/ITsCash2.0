@@ -1,0 +1,260 @@
+/* Match the STI learning home page */
+.learning-app.is-shopping {
+  background: #f2f5f9;
+  color: #17202c;
+}
+.learning-shop {
+  background: #f2f5f9;
+  --brand: #087eb6;
+  --muted: #718092;
+  --line: #e5eaf0;
+  --ink: #17202c;
+  font-family: "Aptos", "Segoe UI", sans-serif;
+}
+.store-announcement {
+  background: #102b43;
+  color: #e1edf5;
+  letter-spacing: 1.3px;
+}
+.uniform-shop-head {
+  border-color: #e5eaf0;
+}
+.uniform-shop-head h1 {
+  color: #102b43;
+  letter-spacing: -0.6px;
+}
+.uniform-shop-head h1:before {
+  content: "STI";
+  display: inline-grid;
+  place-items: center;
+  background: #ffdf19;
+  color: #08659b;
+  border-radius: 5px;
+  width: 51px;
+  height: 42px;
+  font-size: 23px;
+  font-weight: 950;
+  margin-right: 12px;
+  vertical-align: middle;
+}
+.uniform-shop-actions button {
+  color: #34495b;
+  border-radius: 8px;
+}
+.uniform-shop-actions button:hover {
+  background: #e7f2f8;
+  border-color: #91c5d9;
+}
+.uniform-shop-actions .uniform-cart-action {
+  background: #087eb6;
+  color: #fff;
+  border: 0;
+  border-radius: 8px;
+  padding: 0 14px;
+}
+.uniform-cart-action:hover {
+  background: #075f8c !important;
+}
+.store-navigation {
+  border-color: #e5eaf0;
+}
+.store-navigation button {
+  color: #384c5e;
+  border-radius: 6px;
+}
+.store-navigation button:hover {
+  background: #e7f2f8;
+  color: #087eb6;
+}
+.store-hero {
+  background: linear-gradient(115deg, #102b43, #087eb6);
+  color: white;
+  border: 0;
+  border-radius: 16px;
+  margin-top: 20px;
+  padding: 36px 32px;
+}
+.store-hero h2 {
+  font-weight: 750;
+  font-size: clamp(32px, 4.3vw, 58px);
+  letter-spacing: -1.6px;
+}
+.store-hero aside {
+  color: #dcecf7;
+}
+.store-hero .round-link {
+  background: #ffdf19;
+  color: #102b43;
+}
+.store-hero .round-link:hover {
+  background: #ffe959;
+}
+.store-feature {
+  background: #e8eef3;
+  border: 1px solid #e0e7ee;
+  border-radius: 12px;
+  color: #17202c;
+}
+.store-feature img {
+  filter: drop-shadow(5px 15px 10px #102b4324);
+}
+.store-feature .feature-tag {
+  background: #fff;
+  color: #087eb6;
+  border-radius: 5px;
+}
+.feature-caption {
+  background: #fff;
+  color: #17202c;
+}
+.feature-caption > span:last-child {
+  color: #087eb6;
+}
+.uniform-shop-search {
+  background: white;
+  border-color: #e5eaf0;
+  border-radius: 10px;
+}
+.uniform-shop-search button {
+  background: #087eb6;
+  border-radius: 6px;
+}
+.uniform-category-tabs button {
+  color: #718092;
+}
+.uniform-category-tabs button.active {
+  color: #087eb6;
+  border-color: #087eb6;
+  background: transparent;
+}
+.uniform-filter-options select {
+  background: #fff;
+  border-color: #e5eaf0;
+  color: #43576a;
+  border-radius: 6px;
+}
+.uniform-product-header h2 {
+  color: #17202c;
+  font-weight: 750;
+  font-size: 27px;
+  letter-spacing: -0.7px;
+}
+.uniform-result-line {
+  color: #718092;
+}
+.learning-shop .product {
+  border: 1px solid #e5eaf0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #172b3d0a;
+}
+.learning-shop .product:hover {
+  box-shadow: 0 12px 25px #102b4310;
+}
+.learning-shop .prod-image {
+  background: #f7f9fb;
+}
+.learning-shop .prod-title {
+  color: #17202c;
+}
+.learning-shop .tag {
+  color: #087eb6;
+  background: #fff;
+  border-radius: 5px;
+}
+.learning-shop .heart {
+  color: #718092;
+  border-color: #e5eaf0;
+}
+.learning-shop .heart.saved {
+  color: #e34f70;
+}
+.learning-shop .rating {
+  color: #e99a16;
+}
+.learning-shop .rating span {
+  color: #718092;
+}
+.learning-shop .price {
+  color: #102b43;
+  font-weight: 800;
+}
+.learning-shop .stock {
+  color: #16845b;
+}
+.learning-shop .addbtn {
+  background: #087eb6;
+  color: white;
+  border: 0;
+  border-radius: 7px;
+}
+.store-values {
+  background: #102b43;
+  color: #fff;
+  gap: 14px;
+}
+.store-value {
+  border-color: #365269;
+  border-radius: 13px;
+  background: #16364f;
+}
+.store-value span {
+  color: #ffdf19;
+}
+.store-value strong {
+  font-weight: 650;
+}
+.store-footer {
+  background: #102b43;
+  color: #a9c0d3;
+}
+.learning-app.is-shopping ~ .modal-backdrop {
+  --brand: #087eb6;
+  --ink: #17202c;
+  --muted: #718092;
+  --line: #e5eaf0;
+}
+.learning-app.is-shopping ~ .modal-backdrop .primary {
+  background: #087eb6;
+}
+.learning-app.is-shopping ~ .modal-backdrop .primary:hover {
+  background: #075f8c;
+}
+.learning-app.is-shopping ~ .modal-backdrop .secondary {
+  background: #e7f2f8;
+  color: #07648e;
+}
+.learning-app.is-shopping ~ .modal-backdrop .pill {
+  background: #e7f2f8;
+  color: #087eb6;
+}
+@media (max-width: 600px) {
+  .store-hero {
+    padding: 25px 18px;
+    border-radius: 12px;
+  }
+  .store-hero h2 {
+    font-size: 29px;
+    letter-spacing: -1px;
+  }
+  .uniform-shop-head h1 {
+    font-size: 19px;
+  }
+  .uniform-shop-head h1:before {
+    width: 43px;
+    height: 35px;
+    font-size: 21px;
+    margin-right: 8px;
+  }
+  .uniform-shop-actions .uniform-cart-action {
+    padding: 0 10px;
+  }
+  .store-values {
+    gap: 6px;
+  }
+  .store-value {
+    padding: 20px 7px;
+  }
+  .uniform-product-header h2 {
+    font-size: 23px;
+  }
+}

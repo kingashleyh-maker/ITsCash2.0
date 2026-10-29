@@ -1,0 +1,5 @@
+.uniform-programs {display:flex;gap:8px;flex-wrap:wrap;margin:18px 0;align-items:center}
+.uniform-programs button {border:1px solid #d5e1ea;border-radius:24px;padding:9px 18px;background:white;color:#17425e;font-weight:700}
+.uniform-programs button[aria-pressed="true"] {background:#087eb6;color:white;border-color:#087eb6}
+.prod-image img {object-fit:contain;background:#f1f2f5}
+.price {font-size:17px}

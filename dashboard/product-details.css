@@ -1,0 +1,36 @@
+/* Readability fix only: keep the original product popup layout and controls.
+   Dark storefront text variables must not wash out text on this white modal. */
+#productModal {
+  --ink: #172b40;
+  --muted: #4b6074;
+}
+#productModal .modal,
+#productModal .modal-head h3,
+#productModal #productDetails,
+#productModal #productDetails h2,
+#productModal #productDetails .small,
+#productModal #productDetails .small b {
+  color: #172b40;
+}
+#productModal #productDetails .muted,
+#productModal #productDetails .rating span {
+  color: #4b6074;
+}
+#productModal #productDetails .rating {
+  color: #855008;
+}
+#productModal #productDetails div[style*="font-size:28px"],
+#productModal #productDetails div[style*="font-size: 28px"] {
+  color: #064d73;
+}
+#productModal .field label,
+#productModal .field input,
+#productModal .field select,
+#productModal .field select option,
+#productModal .close {
+  color: #253d52;
+}
+#productModal .primary { color: #fff; }
+#productModal .secondary { color: #075b83; }
+/* Avoid fading the button label into the background when unavailable. */
+#productModal .primary:disabled { opacity: 1; color: #fff; }

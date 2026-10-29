@@ -1,0 +1,102 @@
+/* Financial dashboard layout, based on the supplied navy-sidebar reference. */
+body.student-dashboard-active{background:#f7f9fc;color:#172e43}
+#studentFinancialDashboard{font:14px/1.5 'Segoe UI',Arial,sans-serif;color:#172e43}
+#studentFinancialDashboard[hidden]{display:none}
+#studentFinancialDashboard *{box-sizing:border-box}
+#studentFinancialDashboard button,#studentFinancialDashboard input,#studentFinancialDashboard select{font:inherit}
+#studentFinancialDashboard button{cursor:pointer}
+#studentFinancialDashboard button:disabled{cursor:not-allowed;opacity:.6}
+#studentFinancialDashboard .finance-sidebar{position:fixed;inset:0 auto 0 0;width:230px;background:#0d2948;color:#d5e3f0;padding:22px 17px;display:flex;flex-direction:column;z-index:35}
+#studentFinancialDashboard .finance-brand{display:flex;align-items:center;gap:10px;text-align:left;border:0;background:none;color:#fff;padding:0 0 28px}
+#studentFinancialDashboard .finance-sti{display:grid;place-items:center;width:50px;height:34px;border-radius:6px;background:#ffdd20;color:#fff;font-size:21px;font-weight:900}
+#studentFinancialDashboard .finance-brand strong{display:block;font-size:20px;line-height:1.2}
+#studentFinancialDashboard .finance-brand small{display:block;color:#b9cadc;font-size:10px;letter-spacing:1px;margin-top:2px}
+#studentFinancialDashboard .finance-sidebar nav{display:grid;gap:7px}
+#studentFinancialDashboard .finance-sidebar nav button{display:flex;align-items:center;gap:11px;padding:13px 12px;text-align:left;border:0;border-radius:8px;background:transparent;color:#d5e3f0;font-size:13px}
+#studentFinancialDashboard .finance-sidebar nav button.active,#studentFinancialDashboard .finance-sidebar nav button:hover{background:#173c65;color:#fff}
+#studentFinancialDashboard .finance-sidebar nav button>span{font-size:18px;width:18px;color:#e9d442}
+#studentFinancialDashboard .finance-notice-dot{width:7px;height:7px;background:#ffdd20;border-radius:50%;margin-left:auto}
+#studentFinancialDashboard .finance-sidebar-bottom{margin-top:auto;padding-top:20px;border-top:1px solid #2b4664;display:flex;align-items:center;gap:6px}
+#studentFinancialDashboard .finance-profile{display:flex;align-items:center;gap:10px;flex:1;min-width:0;background:none;border:0;padding:0;color:#fff;text-align:left}
+#studentFinancialDashboard .finance-profile img,#studentFinancialDashboard .finance-avatar{width:32px;height:32px;flex-shrink:0;border-radius:50%;object-fit:cover;background:#f3cd13;color:#fff;display:grid;place-items:center;font-weight:800}
+#studentFinancialDashboard .finance-profile strong{font-size:11px;display:block;overflow-wrap:anywhere}
+#studentFinancialDashboard .finance-profile small{font-size:10px;color:#bdcddd;display:block}
+#studentFinancialDashboard .finance-logout{background:none;color:#bfd1e2;border:0;font-size:21px;padding:5px}
+#studentFinancialDashboard .finance-main{margin-left:230px;min-height:100vh;padding:27px;background:#f7f9fc}
+#studentFinancialDashboard .finance-main[hidden]{display:none}
+#studentFinancialDashboard .finance-header{display:flex;justify-content:space-between;gap:20px;align-items:start;margin-bottom:27px}
+#studentFinancialDashboard h1{font-size:23px;line-height:1.3;margin:0 0 3px;color:#17314b}
+#studentFinancialDashboard .finance-header p{color:#526a80;font-size:12px;margin:0}
+#studentFinancialDashboard .finance-header-actions{display:flex;gap:10px;flex-shrink:0;flex-wrap:wrap}
+#studentFinancialDashboard .finance-header-actions button{background:#fff;border:1px solid #d6e0e9;border-radius:6px;color:#1b354f;padding:9px 13px;font-size:12px;box-shadow:0 1px 2px #0d29480a}
+#studentFinancialDashboard .finance-header-actions .finance-primary{background:#0d2948;color:#fff;border-color:#0d2948}
+#studentFinancialDashboard .finance-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-bottom:26px}
+#studentFinancialDashboard .finance-stat{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fff;border:1px solid #e3e9ef;border-radius:13px;padding:22px;text-align:left;box-shadow:0 1px 3px #142c4305;min-width:0}
+#studentFinancialDashboard .finance-stat small{display:block;font-size:10px;letter-spacing:.6px;color:#536b80}
+#studentFinancialDashboard .finance-stat strong{display:block;font-size:24px;color:#152c43;line-height:1.4;overflow-wrap:anywhere}
+#studentFinancialDashboard .finance-stat div>span{display:block;font-size:10px;color:#546b80;margin-top:3px}
+#studentFinancialDashboard .finance-stat .finance-due{color:#9c5b09}
+#studentFinancialDashboard .finance-stat .finance-ready{color:#086e57}
+#studentFinancialDashboard .finance-stat-icon{width:40px;height:40px;display:grid;place-items:center;border-radius:10px;background:#eef5ff;color:#0d2948;flex-shrink:0;font-size:20px}
+#studentFinancialDashboard .finance-stat-icon.warm{color:#a15c00;background:#fff7e6}
+#studentFinancialDashboard .finance-stat-icon.green{color:#00795e;background:#eafaf3}
+#studentFinancialDashboard .finance-overview-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;align-items:stretch}
+#studentFinancialDashboard .finance-card{background:#fff;border:1px solid #e4eaf0;border-radius:13px;padding:20px;box-shadow:0 1px 3px #142c4305;min-width:0}
+#studentFinancialDashboard .finance-card-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+#studentFinancialDashboard .finance-card-title>div{display:flex;align-items:center;gap:10px;min-width:0}
+#studentFinancialDashboard h2{font-size:14px;color:#19334d;margin:0}
+#studentFinancialDashboard .finance-card-title p{color:#526a80;font-size:11px;margin:0}
+#studentFinancialDashboard .finance-card-title>button{white-space:nowrap;border:0;background:none;color:#153957;font-size:11px;font-weight:750;padding:4px}
+#studentFinancialDashboard .finance-card-icon{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:#0d2948;color:#fff;font-size:20px;flex-shrink:0}
+#studentFinancialDashboard .finance-card-icon.orange{background:#f4a000}
+#studentFinancialDashboard .finance-installment{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:16px 13px;border:1px solid #e5ebf0;border-radius:10px;margin:12px 0;background:#fafbfd}
+#studentFinancialDashboard .finance-installment.due{border-color:#eac34d;background:#fffef9}
+#studentFinancialDashboard .finance-installment strong{display:block;font-size:12px;color:#1a354d}
+#studentFinancialDashboard .finance-installment small{display:block;color:#546c80;font-size:10px;margin-top:3px}
+#studentFinancialDashboard .finance-installment-amount{text-align:right;flex-shrink:0}
+#studentFinancialDashboard .finance-installment-amount>b{font-size:12px;color:#18344e}
+#studentFinancialDashboard .finance-installment-amount>div{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:4px}
+.finance-status{display:inline-block;font-size:10px;padding:2px 8px;background:#e9eef3;color:#3e556c;border-radius:20px;font-weight:700;white-space:nowrap}
+.finance-status.status-paid,.finance-status.status-successful{background:#dff8ec;color:#08734f}
+.finance-status.status-pending,.finance-status.status-partiallypaid{background:#fff0c2;color:#835709}
+.finance-status.status-failed,.finance-status.status-refunded{background:#ffe5e9;color:#9c2039}
+#studentFinancialDashboard .finance-mini{border:0;background:#0d2948;color:#fff;padding:5px 10px;border-radius:5px;font-size:11px}
+#studentFinancialDashboard .finance-schedule-note{font-size:10px;color:#536b80;margin:14px 0 0}
+#studentFinancialDashboard .finance-uniform-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+#studentFinancialDashboard .finance-uniform{padding:12px;border:1px solid #e4eaf0;border-radius:10px;background:#fafbfd;min-width:0}
+#studentFinancialDashboard .finance-uniform>img{width:100%;height:140px;object-fit:contain;border-radius:6px;background:#f0f2f6;margin-bottom:10px}
+#studentFinancialDashboard .finance-uniform>strong{display:block;font-size:12px;color:#1b354c;overflow-wrap:anywhere}
+#studentFinancialDashboard .finance-uniform small{display:block;font-size:10px;color:#526b80;margin:4px 0}
+#studentFinancialDashboard .finance-uniform>div{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px}
+#studentFinancialDashboard .finance-uniform b{font-size:12px;color:#18344c}
+#studentFinancialDashboard .finance-uniform button{border:0;border-radius:5px;background:#0d2948;color:#fff;padding:5px 9px;font-size:10px}
+#studentFinancialDashboard .finance-cart-summary{margin-top:16px;padding:14px;border-radius:8px;background:#0d2948;color:#fff;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+#studentFinancialDashboard .finance-cart-summary small,#studentFinancialDashboard .finance-cart-summary strong{display:block;font-size:11px}
+#studentFinancialDashboard .finance-cart-summary strong{font-size:15px}
+#studentFinancialDashboard .finance-cart-summary>div:last-child{display:flex;gap:7px;flex-wrap:wrap}
+#studentFinancialDashboard .finance-cart-summary button{background:#f6cf19;color:#17344b;border:0;border-radius:5px;padding:9px 10px;font-size:10px;font-weight:800}
+#studentFinancialDashboard #financeViewCart{background:transparent;color:#fff;border:1px solid #7b95aa}
+#studentFinancialDashboard .finance-empty{padding:35px 18px;color:#526b80;text-align:center;font-size:12px}
+#studentFinancialDashboard .finance-term{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 20px;font-size:12px;color:#29455f}
+#studentFinancialDashboard .finance-term input,#studentFinancialDashboard .finance-term select{padding:9px 12px;border:1px solid #b9cad8;background:#fff;color:#18354e;border-radius:5px;min-width:220px;max-width:100%}
+#studentFinancialDashboard .finance-term-card{margin-bottom:20px}
+#studentFinancialDashboard .finance-balance-row{display:flex;gap:28px;flex-wrap:wrap;margin:20px 0;color:#536b80;font-size:12px}
+#studentFinancialDashboard .finance-balance-row b{display:block;color:#18354d;font-size:20px}
+#studentFinancialDashboard .finance-table-wrap{width:100%;overflow:auto}
+#studentFinancialDashboard table{width:100%;border-collapse:collapse;font-size:12px}
+#studentFinancialDashboard th{text-align:left;color:#3b5870;background:#f5f8fa;font-size:11px;font-weight:750;white-space:nowrap}
+#studentFinancialDashboard th,#studentFinancialDashboard td{padding:12px 10px;border-bottom:1px solid #e3eaf0;color:#25445e}
+#studentFinancialDashboard td small{display:block;font-size:10px;color:#526b80;margin-top:3px}
+#studentFinancialDashboard .finance-notification{padding:16px 0;border-bottom:1px solid #e4eaf0}
+#studentFinancialDashboard .finance-notification p{color:#3f5d75;font-size:13px}
+#studentFinancialDashboard .finance-notification small{color:#536c82;font-size:11px}
+body.student-dashboard-active:not(.student-view-store) .learning-app{display:none!important}
+body.student-dashboard-active.student-view-store .learning-app{margin-left:230px;width:calc(100% - 230px)}
+body.student-dashboard-active.student-view-store .learning-workspace{width:100%;margin:0}
+body.student-dashboard-active.student-view-store #shop{max-width:none;padding-left:28px;padding-right:28px}
+.finance-quick-overlay{position:fixed;inset:0;background:#081c35a8;display:flex;align-items:center;justify-content:center;z-index:210;padding:20px;font:14px/1.5 'Segoe UI',sans-serif;color:#18354e}
+.finance-quick-card{background:#fff;border-radius:12px;padding:24px;width:min(620px,100%);max-height:90vh;overflow:auto}
+.finance-quick-card header{display:flex;justify-content:space-between;gap:16px;align-items:center}.finance-quick-card h2{margin:0;font-size:20px;color:#18354e}.finance-quick-card p{color:#536b80}.finance-quick-close{width:32px;height:32px;border:1px solid #c5d4df;border-radius:50%;background:#fff;color:#213d56;font-size:19px;cursor:pointer}.finance-quick-choice{display:flex;justify-content:space-between;gap:16px;width:100%;padding:15px;margin-top:10px;background:#f4f8fb;color:#193750;border:1px solid #c9d9e5;border-radius:7px;text-align:left;cursor:pointer}.finance-quick-card .finance-empty{padding:30px;text-align:center;color:#536b80}
+@media(max-width:1200px){#studentFinancialDashboard .finance-overview-grid{grid-template-columns:minmax(0,1fr)}#studentFinancialDashboard .finance-header{flex-wrap:wrap}#studentFinancialDashboard .finance-stat{padding:16px}#studentFinancialDashboard .finance-stat strong{font-size:21px}}
+@media(max-width:800px){#studentFinancialDashboard .finance-sidebar{position:static;width:100%;padding:16px}#studentFinancialDashboard .finance-sidebar nav{display:flex;gap:5px;overflow:auto}#studentFinancialDashboard .finance-sidebar nav button{white-space:nowrap;padding:9px;font-size:11px}#studentFinancialDashboard .finance-brand{padding-bottom:15px}#studentFinancialDashboard .finance-sidebar-bottom{margin-top:15px;padding-top:12px}#studentFinancialDashboard .finance-main{margin-left:0;min-height:0;padding:18px}#studentFinancialDashboard .finance-stats{grid-template-columns:minmax(0,1fr);gap:12px}#studentFinancialDashboard .finance-stat strong{font-size:23px}body.student-dashboard-active.student-view-store .learning-app{margin-left:0;width:100%}body.student-dashboard-active.student-view-store #shop{padding-left:16px;padding-right:16px}#studentFinancialDashboard .finance-header-actions{gap:8px}#studentFinancialDashboard .finance-header-actions button{font-size:11px}}
+@media(max-width:450px){#studentFinancialDashboard .finance-uniform-grid{grid-template-columns:minmax(0,1fr)}#studentFinancialDashboard .finance-card{padding:15px}#studentFinancialDashboard .finance-card-title{align-items:start}#studentFinancialDashboard .finance-installment{gap:8px;padding:12px 10px}}

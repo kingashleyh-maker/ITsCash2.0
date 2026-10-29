@@ -1,0 +1,330 @@
+/* Proware inventory workspace */
+#pwApp {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  background: #f1f5f8;
+  color: #183144;
+  font:
+    14px/1.5 "Segoe UI",
+    sans-serif;
+  overflow: auto;
+}
+#pwApp[hidden] {
+  display: none;
+}
+#pwApp * {
+  box-sizing: border-box;
+}
+#pwApp button,
+#pwApp input,
+#pwApp select,
+#pwApp textarea {
+  font: inherit;
+}
+#pwApp button {
+  cursor: pointer;
+}
+#pwApp button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.pw-top {
+  background: #102b43;
+  color: #fff;
+  padding: 18px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.pw-top h1 {
+  font-size: 23px;
+  margin: 0;
+}
+.pw-top small {
+  color: #a8c4d9;
+}
+.pw-tools {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.pw-wrap {
+  max-width: 1480px;
+  margin: auto;
+  padding: 24px;
+}
+.pw-nav {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+.pw-btn {
+  border: 1px solid #cbd9e3;
+  background: #fff;
+  color: #24455d;
+  padding: 9px 14px;
+  border-radius: 9px;
+  font-weight: 650;
+}
+.pw-btn:hover {
+  background: #e7f0f6;
+}
+.pw-btn.active,
+.pw-primary {
+  background: #087b75;
+  color: #fff;
+  border-color: #087b75;
+}
+.pw-top .pw-btn {
+  background: #1b3c55;
+  border-color: #42617a;
+  color: #fff;
+}
+.pw-danger {
+  color: #b3313c;
+  border-color: #e9c3c8;
+}
+.pw-card {
+  border: 1px solid #dce5ec;
+  border-radius: 15px;
+  padding: 22px;
+  background: #fff;
+  margin-bottom: 18px;
+  box-shadow: 0 3px 14px #1a355006;
+}
+.pw-card h2 {
+  font-size: 19px;
+  margin: 0 0 8px;
+}
+.pw-card h3 {
+  font-size: 15px;
+  margin: 0 0 12px;
+}
+.pw-muted {
+  color: #687f91;
+  font-size: 12px;
+}
+.pw-note {
+  padding: 13px 16px;
+  border: 1px solid #c3deeb;
+  background: #edf7fc;
+  border-radius: 10px;
+  margin: 14px 0;
+}
+.pw-warning {
+  background: #fff8e8;
+  border-color: #f1dcad;
+  color: #755719;
+}
+.pw-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.pw-stat {
+  padding: 20px;
+  background: #fff;
+  border-radius: 13px;
+  border: 1px solid #dce5ec;
+}
+.pw-stat span {
+  font-size: 12px;
+  color: #687f91;
+  display: block;
+}
+.pw-stat strong {
+  display: block;
+  font-size: 30px;
+  margin-top: 7px;
+}
+.pw-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.pw-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.pw-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.pw-field label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #38566c;
+}
+.pw-field input,
+.pw-field select,
+.pw-field textarea {
+  width: 100%;
+  border: 1px solid #c8d7e2;
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: #fff;
+  color: #183144;
+}
+.pw-field input:focus,
+.pw-field select:focus,
+.pw-field textarea:focus {
+  outline: 2px solid #76bcb7;
+  outline-offset: 1px;
+}
+.pw-full {
+  grid-column: 1/-1;
+}
+.pw-form .pw-btn {
+  justify-self: start;
+}
+.pw-table-wrap {
+  overflow: auto;
+}
+.pw-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.pw-table th {
+  text-align: left;
+  background: #f3f7fa;
+  color: #5a7285;
+  font-size: 10px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  padding: 12px;
+}
+.pw-table td {
+  padding: 13px 12px;
+  border-bottom: 1px solid #edf1f5;
+}
+.pw-table td.wrap {
+  white-space: normal;
+  min-width: 160px;
+  max-width: 300px;
+  padding: 13px 12px;
+}
+.pw-table small {
+  display: block;
+  color: #718493;
+}
+.pw-pill {
+  display: inline-block;
+  border-radius: 20px;
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: 750;
+  background: #e7f6ef;
+  color: #237052;
+}
+.pw-pill.low {
+  background: #fff1d5;
+  color: #946000;
+}
+.pw-pill.out {
+  background: #fce7e9;
+  color: #b13f4a;
+}
+.pw-toolbar {
+  display: flex;
+  gap: 12px;
+  align-items: end;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.pw-toolbar .pw-field {
+  flex: 1;
+  min-width: 150px;
+}
+.pw-empty {
+  padding: 28px;
+  text-align: center;
+  color: #687f91;
+}
+.pw-auth {
+  max-width: 500px;
+  margin: 45px auto;
+}
+.pw-auth .pw-form {
+  grid-template-columns: 1fr;
+}
+.pw-error {
+  padding: 12px;
+  background: #ffeded;
+  border: 1px solid #f4c7c7;
+  border-radius: 9px;
+  color: #a92c35;
+}
+.pw-message {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 12px 28px;
+  background: #e1f3ec;
+  color: #145c46;
+  border-bottom: 1px solid #adcfbe;
+}
+.pw-message:empty {
+  display: none;
+}
+.pw-entry {
+  border: 1px solid #368d85;
+  background: #0c5555;
+  color: white;
+  border-radius: 9px;
+  padding: 9px 14px;
+  font:
+    700 12px "Segoe UI",
+    sans-serif;
+}
+.pw-list {
+  margin: 0;
+  padding-left: 20px;
+  color: #4f6b80;
+}
+.pw-right {
+  text-align: right;
+}
+@media (max-width: 760px) {
+  .pw-wrap {
+    padding: 14px;
+  }
+  .pw-top {
+    padding: 16px;
+  }
+  .pw-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .pw-grid,
+  .pw-form {
+    grid-template-columns: 1fr;
+  }
+  .pw-full {
+    grid-column: auto;
+  }
+  .pw-card {
+    padding: 16px;
+  }
+  .pw-nav .pw-btn {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+  .pw-top h1 {
+    font-size: 20px;
+  }
+}
+.pw-btn.pw-primary:hover,
+.pw-btn.active:hover {
+  background: #08645f;
+  color: #fff;
+}

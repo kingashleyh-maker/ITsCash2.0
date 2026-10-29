@@ -1,0 +1,148 @@
+:root {
+  --brand: #087eb6;
+  --brand2: #29b9ec;
+}
+.store-hero {
+  background:
+    radial-gradient(ellipse at 85% 20%, #115574, transparent 65%), #101d2c !important;
+  border: 1px solid #25475e;
+  border-radius: 24px !important;
+}
+.store-hero h2 {
+  letter-spacing: -2px;
+}
+.store-announcement {
+  background: #0b7aab !important;
+  letter-spacing: 2px;
+}
+.uniform-shop-head h1 {
+  letter-spacing: -1.5px;
+}
+.product {
+  border-radius: 18px !important;
+}
+.om-top {
+  background: linear-gradient(110deg, #112b40, #102019);
+}
+.om-card {
+  border-radius: 16px;
+}
+.om-ticket {
+  margin: 8px;
+  width: calc(100% - 16px);
+  border: 1px solid #29313f;
+  border-radius: 12px;
+}
+.om-ticket.selected {
+  border-color: #29b9ec;
+}
+.om input {
+  width: 100%;
+  background: #0c1017;
+  color: #e5edf7;
+  border: 1px solid #334154;
+  padding: 12px;
+  border-radius: 8px;
+}
+.cash-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.cash-stat {
+  padding: 16px;
+  background: #121e2b;
+  border: 1px solid #293c4e;
+  border-radius: 14px;
+}
+.cash-stat small {
+  display: block;
+  color: #97a7bd;
+}
+.cash-stat b {
+  display: block;
+  font-size: 23px;
+  margin-top: 5px;
+}
+.cash-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.cash-table th {
+  color: #97a7bd;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 500;
+}
+.cash-table th,
+.cash-table td {
+  padding: 12px 8px;
+  border-bottom: 1px solid #29313f;
+}
+.cash-table-wrap {
+  overflow: auto;
+}
+.cash-table td:last-child,
+.cash-table th:last-child {
+  text-align: right;
+}
+.cash-checkout {
+  padding: 18px;
+  background: #edf7fc;
+  border-radius: 15px;
+  margin-bottom: 18px;
+  color: #17425e;
+}
+.cash-checkout b {
+  display: block;
+  font-size: 22px;
+}
+.om-badge[data-status="Unpaid"],
+.om-badge[data-status="Pending"] {
+  color: #ffd37b;
+  background: #382b14;
+  border-color: #64491b;
+}
+.om-badge[data-status="Cancelled"] {
+  color: #ffa3a3;
+  background: #351d25;
+  border-color: #663441;
+}
+.om-action {
+  border-radius: 9px;
+  font-weight: 700;
+}
+.cash-summary {
+  background: #101d29;
+  padding: 15px;
+  border-radius: 12px;
+  margin: 14px 0;
+}
+.cash-summary div {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+}
+.modal-head {
+  background: #f1f8fc;
+}
+.modal-body h4 {
+  color: #17425e;
+}
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+@media (max-width: 600px) {
+  .cash-stats {
+    grid-template-columns: 1fr;
+  }
+  .cash-table {
+    min-width: 480px;
+  }
+  .store-hero h2 {
+    font-size: 34px !important;
+  }
+}

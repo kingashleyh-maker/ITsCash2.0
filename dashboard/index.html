@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#111827" />
+    <title>ITsCash · Dashboard</title>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
+      defer
+    ></script>
+    <link rel="stylesheet" href="../shared/base.css">
+    <link rel="stylesheet" href="../dashboard/auth.css"><link rel="stylesheet" href="../shared/icons.css"><link rel="stylesheet" href="../dashboard/store-layout.css"><link rel="stylesheet" href="../dashboard/learning-layout.css"><link rel="stylesheet" href="../dashboard/background.css"><link rel="stylesheet" href="../dashboard/theme.css"><link rel="stylesheet" href="../shared/workspace.css">
+<link rel="stylesheet" href="../dashboard/product-details.css">
+<link rel="stylesheet" href="../dashboard/student-account.css">
+<link rel="stylesheet" href="../dashboard/student-dashboard.css">
+</head
+  >
+  <body data-workspace="dashboard">
+    <div class="learning-app">
+      <div class="learning-workspace">
+        <header class="learning-topbar"><div class="topbar-title">ITsCash</div><div class="topbar-tools"></div></header>
+        <section class="learning-shop" id="shop" aria-labelledby="uniformShopTitle">
+          <div class="uniform-shop-head">
+            <div
+              ><div class="uniform-shop-label">STI CAMPUS STORE</div
+              ><h1 id="uniformShopTitle">School uniforms</h1
+              ><p>Uniform essentials, ready for your next campus day.</p></div
+            >
+            <div class="uniform-shop-actions">
+              
+              <button type="button" onclick="openSaved()"
+                ><span class="button-symbol" aria-hidden="true">♡</span> Saved
+                <span id="uniformSavedCount">0</span></button
+              >
+              <button type="button" onclick="openOrders()">My orders</button>
+              <button type="button" onclick="openNotifications()"
+                >Notifications <span id="uniformNotifCount">0</span></button
+              >
+              <button class="uniform-cart-action" type="button" onclick="openCart()"
+                >Cart <span id="uniformCartCount">0</span></button
+              >
+            </div>
+          </div>
+          <form class="uniform-shop-search" id="searchForm" role="search"
+            ><span aria-hidden="true">⌕</span
+            ><input
+              id="searchInput"
+              aria-label="Search school uniforms"
+              placeholder="Search uniforms, shirts, pants, or sellers"
+            /><button type="submit">Search</button></form
+          >
+          <div class="uniform-shop-layout">
+            <aside class="uniform-filter-sidebar" aria-label="Uniform filters">
+              <h2>Browse uniforms</h2>
+              <nav class="uniform-category-tabs" id="navCategories" aria-label="Uniform categories"
+                ><button class="active" type="button" data-cat="All">All uniforms</button
+                ><button type="button" data-cat="Shirts">Shirts</button
+                ><button type="button" data-cat="Pants">Pants</button></nav
+              >
+              <details class="uniform-filter-group" open
+                ><summary>Category</summary
+                ><div class="uniform-filter-options"
+                  ><select id="categoryFilter" aria-label="Uniform category"
+                    ><option value="All">All categories</option
+                    ><option value="Shirts">Shirts</option
+                    ><option value="Pants">Pants</option></select
+                  ></div
+                ></details
+              >
+            </aside>
+            <div class="uniform-product-area">
+              <div class="uniform-product-header"
+                ><h2 id="productHeading">All uniforms</h2
+                ><p class="uniform-result-line" id="resultCount" aria-live="polite"
+                  >Loading uniforms</p
+                ></div
+              >
+              <div class="products" id="productGrid"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+    <!-- Dashboard navigation and course search -->
+    <script src="../dashboard/dashboard-shell.js"></script>
+    <div class="topline"
+      ><div class="wrap"
+        ><span>✦ A little something for every day</span
+        ><span>School uniforms · Demo storefront</span></div
+      ></div
+    >
+    <header class="header">
+      <div class="wrap headrow">
+        <a href="#" class="logo" aria-label="Marketly home">marketly<b>.</b></a>
+        <form class="searchbar" id="legacySearchForm" role="search"
+          ><span>⌕</span
+          ><input
+            id="legacySearchInput"
+            aria-label="Search products"
+            placeholder="Search products, brands, and more..."
+          /><button type="submit">Search</button></form
+        >
+        <div class="head-actions">
+          <button class="navbtn" onclick="openModal('sellerModal')">Sell on Marketly</button>
+          <button class="iconbtn" onclick="openNotifications()" aria-label="Notifications"
+            >♧<span class="count" id="notifCount">2</span></button
+          >
+          <button class="iconbtn" onclick="openCart()" aria-label="Shopping cart"
+            >🛒<span class="count" id="cartCount">0</span></button
+          >
+        </div>
+      </div>
+      <div class="navline"
+        ><div class="wrap navrow" id="legacyNavCategories">
+          <button class="active" data-cat="All">All products</button
+          ><button data-cat="Fashion">Fashion</button
+          ><button data-cat="Electronics">Electronics</button
+          ><button data-cat="Home">Home & living</button><button data-cat="Beauty">Beauty</button
+          ><button data-cat="Sports">Sports</button
+          ><button data-cat="School">School essentials</button>
+        </div></div
+      >
+    </header>
+    <main>
+      <section class="hero"
+        ><div class="wrap"
+          ><div class="hero-card">
+            <div
+              ><div class="eyebrow">Your next great find is here</div
+              ><h1>Good finds.<br />Better everyday.</h1
+              ><p
+                >Discover useful things, little treats, and everyday essentials from sellers you can
+                trust.</p
+              ><button
+                class="primary"
+                onclick="document.getElementById('shop').scrollIntoView({ behavior: 'smooth' })"
+                >Explore products&nbsp; →</button
+              ></div
+            >
+            <div class="hero-art"
+              ><div class="orb"><span>🛍️</span></div
+              ><div class="float-tag one">✦ Curated for you</div
+              ><div class="float-tag two">♡ Save your favorites</div></div
+            >
+          </div></div
+        ></section
+      >
+      <section class="section"
+        ><div class="wrap">
+          <div class="section-head"
+            ><div><h2>Shop by category</h2><p>Find what you're looking for, faster.</p></div></div
+          >
+          <div class="category-row" id="legacyCategoryCards">
+            <button class="cat active" data-cat="All"
+              ><span class="emoji">✦</span><strong>Everything</strong></button
+            >
+            <button class="cat" data-cat="Fashion"
+              ><span class="emoji">👕</span><strong>Fashion</strong></button
+            >
+            <button class="cat" data-cat="Electronics"
+              ><span class="emoji">🎧</span><strong>Electronics</strong></button
+            >
+            <button class="cat" data-cat="Home"
+              ><span class="emoji">🪴</span><strong>Home & living</strong></button
+            >
+            <button class="cat" data-cat="Beauty"
+              ><span class="emoji">🧴</span><strong>Beauty</strong></button
+            >
+            <button class="cat" data-cat="School"
+              ><span class="emoji">🎒</span><strong>School</strong></button
+            >
+          </div>
+        </div></section
+      >
+      <section class="section" id="legacyShop"
+        ><div class="wrap">
+          <div class="section-head"
+            ><div
+              ><h2 id="legacyProductHeading">Popular right now</h2
+              ><p>Thoughtful picks from our community of sellers.</p></div
+            ><button class="textbtn" onclick="resetFilters()">Reset filters ↗</button></div
+          >
+          <div class="toolbar"
+            ><div class="filters">
+              <select id="legacyCategoryFilter" aria-label="Category"
+                ><option value="All">All categories</option
+                ><option>Fashion</option
+                ><option>Electronics</option
+                ><option>Home</option
+                ><option>Beauty</option
+                ><option>Sports</option
+                ><option>School</option></select
+              >
+              <input
+                id="legacyMinPrice"
+                type="number"
+                min="0"
+                placeholder="Min ₱"
+                aria-label="Minimum price"
+              />
+              <input
+                id="legacyMaxPrice"
+                type="number"
+                min="0"
+                placeholder="Max ₱"
+                aria-label="Maximum price"
+              />
+              <select id="legacyRatingFilter" aria-label="Minimum rating"
+                ><option value="0">Any rating</option
+                ><option value="4">4★ & up</option
+                ><option value="4.5">4.5★ & up</option></select
+              >
+              <select id="legacyLocationFilter" aria-label="Seller location"
+                ><option value="All">All locations</option
+                ><option>Metro Manila</option
+                ><option>Quezon City</option
+                ><option>Cebu</option
+                ><option>Davao</option
+                ><option>Taguig</option></select
+              >
+              <select id="legacySortFilter" aria-label="Sort products"
+                ><option value="featured">Featured</option
+                ><option value="priceAsc">Price: low to high</option
+                ><option value="priceDesc">Price: high to low</option
+                ><option value="rating">Top rated</option></select
+              > </div
+            ><div class="result-count" id="legacyResultCount">Showing products</div></div
+          >
+          <div class="products" id="legacyProductGrid"></div>
+          <div class="benefits">
+            <div class="benefit"
+              ><i>✓</i
+              ><div><strong>Order updates</strong><small>Follow your order status</small></div></div
+            >
+            <div class="benefit"
+              ><i>🔒</i
+              ><div
+                ><strong>Checkout with care</strong><small>Secure-service demo flow</small></div
+              ></div
+            >
+            <div class="benefit"
+              ><i>↩️</i
+              ><div
+                ><strong>Easy order tracking</strong><small>See updates in one place</small></div
+              ></div
+            >
+            <div class="benefit"
+              ><i>♡</i
+              ><div
+                ><strong>Save for later</strong><small>Keep your favorites close</small></div
+              ></div
+            >
+          </div>
+        </div></section
+      >
+    </main>
+    <footer class="footer"
+      ><div class="wrap footerrow"
+        ><div
+          ><a href="#" class="logo">marketly<b>.</b></a
+          ><p>Everyday finds from independent sellers.</p></div
+        ><div
+          ><strong>Made for the Philippines 🇵🇭</strong
+          ><p>Prices shown in Philippine pesos (₱).</p></div
+        ><p>© 2026 Marketly Demo · Front-end prototype</p></div
+      ></footer
+    >
+    <nav class="mobile-bottom"
+      ><button class="active" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+        ><span>⌂</span>Home</button
+      ><button onclick="document.getElementById('shop').scrollIntoView({ behavior: 'smooth' })"
+        ><span>⌕</span>Explore</button
+      ><button onclick="openSaved()"><span>♡</span>Saved</button
+      ><button onclick="openCart()"><span>🛒</span>Cart</button></nav
+    >
+
+    <div class="modal-backdrop" id="authModal"
+      ><div class="modal"
+        ><div class="modal-head"
+          ><h3 id="authTitle">Welcome back</h3
+          ><button class="close" onclick="closeModal('authModal')">×</button></div
+        ><div class="modal-body">
+          <div class="tabs"
+            ><button class="active" id="loginTab" onclick="setAuthMode('login')">Log in</button
+            ><button id="registerTab" onclick="setAuthMode('register')">Create account</button></div
+          >
+          <form id="authForm"
+            ><div class="field" id="nameField" style="display: none"
+              ><label for="authName">Full name</label
+              ><input id="authName" autocomplete="name" placeholder="Your name"
+            /></div>
+            <div class="field"
+              ><label for="authEmail">Email address</label
+              ><input
+                id="authEmail"
+                type="email"
+                autocomplete="email"
+                required
+                placeholder="you@example.com"
+            /></div>
+            <div class="field"
+              ><label for="authPassword">Password</label
+              ><input
+                id="authPassword"
+                type="password"
+                autocomplete="current-password"
+                minlength="4"
+                required
+                placeholder="Enter password"
+            /></div>
+            <p class="small muted"
+              >Demo account: any valid email and a password with 4+ characters. This prototype
+              stores demo account state only in this browser.</p
+            >
+            <button class="primary" type="submit" style="width: 100%" id="authSubmit"
+              >Log in</button
+            ></form
+          >
+        </div></div
+      ></div
+    >
+
+    <div class="modal-backdrop" id="productModal"
+      ><div class="modal wide"
+        ><div class="modal-head"
+          ><h3>Product details</h3
+          ><button class="close" onclick="closeModal('productModal')">×</button></div
+        ><div class="modal-body" id="productDetails"></div></div
+    ></div>
+    <div class="modal-backdrop" id="cartModal"
+      ><div class="modal wide"
+        ><div class="modal-head"
+          ><h3>Your cart</h3><button class="close" onclick="closeModal('cartModal')">×</button></div
+        ><div class="modal-body" id="cartContent"></div></div
+    ></div>
+    <div class="modal-backdrop" id="checkoutModal"
+      ><div class="modal wide"
+        ><div class="modal-head"
+          ><h3>Checkout</h3
+          ><button class="close" onclick="closeModal('checkoutModal')">×</button></div
+        ><div class="modal-body" id="checkoutContent"></div></div
+    ></div>
+    <div class="modal-backdrop" id="ordersModal"
+      ><div class="modal wide"
+        ><div class="modal-head"
+          ><h3>My orders</h3
+          ><button class="close" onclick="closeModal('ordersModal')">×</button></div
+        ><div class="modal-body" id="ordersContent"></div></div
+    ></div>
+    <div class="modal-backdrop" id="savedModal"
+      ><div class="modal"
+        ><div class="modal-head"
+          ><h3>Saved for later</h3
+          ><button class="close" onclick="closeModal('savedModal')">×</button></div
+        ><div class="modal-body" id="savedContent"></div></div
+    ></div>
+    <div class="modal-backdrop" id="notificationsModal"
+      ><div class="modal"
+        ><div class="modal-head"
+          ><h3>Notifications</h3
+          ><button class="close" onclick="closeModal('notificationsModal')">×</button></div
+        ><div class="modal-body" id="notificationsContent"></div></div
+    ></div>
+    <div class="modal-backdrop" id="sellerModal"
+      ><div class="modal wide"
+        ><div class="modal-head"
+          ><h3>Seller studio</h3
+          ><button class="close" onclick="closeModal('sellerModal')">×</button></div
+        ><div class="modal-body" id="sellerContent"></div></div
+    ></div>
+    <div class="modal-backdrop" id="orderSuccessModal"
+      ><div class="modal"
+        ><div class="modal-head"
+          ><h3>Order confirmed!</h3
+          ><button class="close" onclick="closeModal('orderSuccessModal')">×</button></div
+        ><div class="modal-body" id="successContent"></div></div
+    ></div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <!-- Store data, cart, checkout, and shared utilities -->
+    <script src="../dashboard/store.js"></script>
+    <link rel="stylesheet" href="../shared/buttons.css">
+    <link rel="stylesheet" href="../cashier/order-manager.css">
+    <section id="orderManager" class="om" role="dialog" aria-modal="true" aria-labelledby="omTitle"
+      ><header class="om-top"
+        ><div
+          ><strong id="omTitle">ITs Cash · Order management</strong
+          ><small>STI Uniform Shop / Staff demo view</small></div
+        ><div
+          ><label for="omRole">View as </label
+          ><select id="omRole"
+            ><option>Cashier</option
+            ><option>Proware</option></select
+          >
+          <button id="omClose" onclick="closeOrderManager()">Back to shop</button></div
+        ></header
+      ><div class="om-body"
+        ><aside class="om-side"
+          ><div class="om-search"
+            ><input
+              id="omSearch"
+              placeholder="Search order, student name or number"
+              aria-label="Search student orders" /><select
+              id="omFilter"
+              aria-label="Filter order status"
+              ><option value="All">All orders</option
+              ><option>Order placed</option
+              ><option>Processing</option
+              ><option>Ready for pickup</option
+              ><option>Complete</option
+              ><option>Refunded</option></select
+            ><span class="om-note" id="omCount"></span></div
+          ><div id="omList"></div></aside
+        ><main id="omDetail" class="om-detail"></main></div
+    ></section>
+    <!-- Staff order management and student details -->
+    <script src="../cashier/order-manager.js"></script>
+
+    <link rel="stylesheet" href="../cashier/order-tabs.css">
+    <!-- Cashier status and student notification extensions -->
+    <script src="../cashier/order-manager-controls.js"></script>
+
+    <!-- Store presentation and featured products -->
+    <script src="../dashboard/presentation.js"></script><link rel="stylesheet" href="../shared/theme.css">
+    <!-- Cashier payments, receipts, and order status -->
+    <script src="../cashier/legacy-payments.js"></script>
+
+    <link rel="stylesheet" href="../cashier/tickets.css">
+    <!-- Checkout tickets and tab synchronization -->
+    <script src="../cashier/ticket-counter.js"></script>
+
+    <link rel="stylesheet" href="../cashier/inbox.css">
+    <!-- Cashier inbox and order alerts -->
+    <script src="../cashier/inbox.js"></script>
+    <!-- Proware inventory workspace -->
+    <link rel="stylesheet" href="../proware/inventory.css">
+    <script src="../shared/catalog.js"></script>
+    <script src="../proware/inventory.js"></script>
+    <!-- Student and cashier payment workspace -->
+    <link rel="stylesheet" href="../cashier/payments.css">
+    <script src="../cashier/payments.js"></script>
+
+    <link rel="stylesheet" href="../dashboard/programs.css">
+    <script src="../dashboard/programs.js"></script>
+  <script src="../shared/workspace.js"></script>
+<script src="../dashboard/product-details.js"></script>
+<script src="../dashboard/student-account.js"></script>
+<script src="../dashboard/student-dashboard.js"></script>
+</body>
+</html>

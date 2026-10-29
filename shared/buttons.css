@@ -1,0 +1,15 @@
+.button-symbol {
+  display: inline-block;
+  margin-inline-end: 0.3em;
+}
+@media (max-width: 600px) {
+  .detailgrid {
+    grid-template-columns: 1fr !important;
+  }
+  .detailgrid > div:first-child {
+    min-height: 180px !important;
+  }
+  .detailgrid img {
+    max-height: 240px !important;
+  }
+}

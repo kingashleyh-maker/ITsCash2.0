@@ -1,0 +1,75 @@
+.cash-inbox-button {
+  background: #11384c !important;
+  border-color: #287391 !important;
+  position: relative;
+}
+.cash-inbox-panel {
+  position: absolute;
+  right: 20px;
+  top: 84px;
+  width: min(420px, calc(100vw - 32px));
+  max-height: 60vh;
+  overflow: auto;
+  background: #132334;
+  border: 1px solid #32566d;
+  border-radius: 14px;
+  box-shadow: 0 20px 60px #0008;
+  z-index: 5;
+  padding: 16px;
+}
+.cash-inbox-panel[hidden] {
+  display: none;
+}
+.cash-inbox-panel h3 {
+  margin: 0 0 12px;
+}
+.cash-inbox-item {
+  display: block;
+  width: 100%;
+  padding: 14px !important;
+  margin-bottom: 8px;
+  text-align: left;
+  border-radius: 10px !important;
+}
+.cash-inbox-item small {
+  display: block;
+  color: #a9c4d6;
+  margin: 5px 0;
+}
+.cash-live-alert {
+  position: fixed;
+  right: 22px;
+  bottom: 24px;
+  z-index: 130;
+  width: min(390px, calc(100vw - 32px));
+  background: #123b50;
+  color: #effaff;
+  border: 1px solid #38b9e9;
+  border-radius: 16px;
+  box-shadow: 0 14px 50px #0006;
+  padding: 20px;
+}
+.cash-live-alert[hidden] {
+  display: none;
+}
+.cash-live-alert strong {
+  display: block;
+  font-size: 18px;
+}
+.cash-live-alert p {
+  font-size: 13px;
+  margin: 8px 0;
+}
+.cash-live-alert button {
+  border: 0;
+  border-radius: 8px;
+  padding: 9px 12px;
+  background: #29b9ec;
+  color: #072536;
+  font-weight: 700;
+}
+.cash-live-alert .dismiss {
+  background: transparent;
+  color: #dbf3ff;
+  margin-left: 6px;
+}

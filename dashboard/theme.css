@@ -1,0 +1,136 @@
+/* Home page shares the cashier dark palette. */
+:root {
+  --learn-paper: #0c1017;
+  --learn-ink: #e5edf7;
+  --learn-muted: #8d9cb1;
+  --learn-line: #29313f;
+}
+body,
+.learning-app,
+.learning-workspace,
+.learning-layout {
+  background: #0c1017;
+  color: #e5edf7;
+}
+.learning-sidebar {
+  background: #101722;
+  border-right: 1px solid #29313f;
+}
+.learning-topbar {
+  background: #151c27;
+  border-color: #29313f;
+  color: #e5edf7;
+}
+.learning-search {
+  background: #0c1017;
+  border-color: #334154;
+  color: #8d9cb1;
+}
+.learning-search input {
+  color: #e5edf7;
+}
+.learning-search input::placeholder {
+  color: #8d9cb1;
+}
+.top-icon {
+  background: #182231;
+  color: #aebdd0;
+}
+.top-icon:hover {
+  background: #102d43;
+  color: #29b9ec;
+}
+.student-chip {
+  color: #e5edf7;
+}
+.learning-nav button:hover,
+.learning-nav button.is-active {
+  background: #102d43;
+  color: #29b9ec;
+}
+.learning-nav button.is-active .nav-glyph {
+  color: #29b9ec;
+}
+.term-pill,
+.course-tabs button {
+  background: #151c27;
+  border-color: #334154;
+  color: #aebdd0;
+}
+.course-tabs button.selected {
+  background: #087eb6;
+  color: #fff;
+}
+.course-card,
+.learning-path,
+.goal-card,
+.uniform-card,
+.rail-panel {
+  background: #151c27;
+  border-color: #29313f;
+  color: #e5edf7;
+  box-shadow: none;
+}
+.section-link,
+.course-open,
+.goal-card span,
+.rail-title span {
+  color: #29b9ec;
+}
+.course-meta,
+.uniform-sizes {
+  color: #aebdd0;
+}
+.course-progress {
+  background: #29313f;
+}
+.path-step {
+  border-color: #334154;
+}
+.path-step:before {
+  border-color: #151c27;
+}
+.uniform-price {
+  color: #e5edf7;
+}
+.uniform-size-select {
+  background: #182231;
+  border-color: #334154;
+  color: #e5edf7;
+}
+.todo-item,
+.online-person {
+  color: #aebdd0;
+}
+.rail-entry {
+  border-color: #29313f;
+}
+.day-label {
+  background: #182231;
+  color: #aebdd0;
+}
+.uniform-dialog,
+.uniform-dialog-head {
+  background: #151c27;
+  color: #e5edf7;
+}
+.uniform-dialog-head {
+  border-color: #29313f;
+}
+.uniform-dialog-close {
+  background: #182231;
+  color: #e5edf7;
+}
+.uniform-cart-line {
+  border-color: #29313f;
+}
+.uniform-qty button,
+.uniform-form input,
+.uniform-form select {
+  background: #182231;
+  border-color: #334154;
+  color: #e5edf7;
+}
+.uniform-form label {
+  color: #aebdd0;
+}

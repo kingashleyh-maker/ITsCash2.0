@@ -1,0 +1,259 @@
+.om {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  background: #0c1017;
+  color: #e5edf7;
+  display: none;
+  font:
+    14px/1.5 "Segoe UI",
+    sans-serif;
+}
+.om.open {
+  display: flex;
+  flex-direction: column;
+}
+.om button,
+.om input,
+.om select,
+.om textarea {
+  font: inherit;
+}
+.om button {
+  cursor: pointer;
+}
+.om-top {
+  padding: 16px 24px;
+  border-bottom: 1px solid #29313f;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.om-top strong {
+  font-size: 21px;
+}
+.om-top small {
+  color: #8d9cb1;
+  display: block;
+}
+.om-top button,
+.om-top select {
+  padding: 9px 12px;
+  background: #182231;
+  color: #fff;
+  border: 1px solid #334154;
+  border-radius: 7px;
+}
+.om-body {
+  display: grid;
+  grid-template-columns: 290px minmax(0, 1fr);
+  min-height: 0;
+  flex: 1;
+}
+.om-side {
+  border-right: 1px solid #29313f;
+  overflow: auto;
+}
+.om-search {
+  padding: 16px;
+}
+.om-search input,
+.om-search select {
+  width: 100%;
+  background: #151c27;
+  border: 1px solid #334154;
+  color: #e5edf7;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+.om-ticket {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  border-bottom: 1px solid #29313f;
+  background: transparent;
+  color: #e5edf7;
+  padding: 18px;
+}
+.om-ticket.selected {
+  background: #102d43;
+  border-left: 3px solid #29b9ec;
+}
+.om-ticket small {
+  display: block;
+  color: #97a7bd;
+  margin: 4px 0;
+}
+.om-badge {
+  font-size: 11px;
+  color: #59d7ac;
+  background: #10352b;
+  border: 1px solid #235544;
+  padding: 3px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+.om-detail {
+  padding: 24px;
+  overflow: auto;
+  min-width: 0;
+}
+.om-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid #29313f;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+.om-heading h2 {
+  margin: 0 0 7px;
+  font-size: 25px;
+}
+.om-sub {
+  color: #97a7bd;
+  font-size: 12px;
+}
+.om-total {
+  font-size: 26px;
+  font-weight: 800;
+  color: #34bcea;
+}
+.om-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  max-width: 1100px;
+}
+.om-card {
+  background: #121923;
+  border: 1px solid #29313f;
+  padding: 22px;
+  border-radius: 7px;
+  min-width: 0;
+}
+.om-card h3 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #97a7bd;
+  margin: 0 0 20px;
+}
+.om-info {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 13px;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.om-info dt {
+  color: #8d9cb1;
+}
+.om-info dd {
+  margin: 0;
+}
+.om-card label {
+  display: block;
+  color: #aebdd0;
+  margin: 12px 0 7px;
+  font-size: 12px;
+}
+.om-card select,
+.om-card textarea {
+  width: 100%;
+  background: #0c1017;
+  color: #e5edf7;
+  border: 1px solid #334154;
+  padding: 12px;
+  border-radius: 5px;
+}
+.om-card textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+.om-action {
+  background: #087eb6;
+  color: #fff;
+  border: 0;
+  padding: 10px 15px;
+  border-radius: 5px;
+  margin: 12px 6px 0 0;
+}
+.om-action.refund {
+  background: #763946;
+}
+.om-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #29313f;
+}
+.om-item img {
+  width: 65px;
+  height: 65px;
+  object-fit: contain;
+  background: white;
+  border-radius: 5px;
+}
+.om-item .om-sub {
+  margin-top: 4px;
+}
+.om-item b:last-child {
+  margin-left: auto;
+  white-space: nowrap;
+}
+.om-empty {
+  padding: 30px;
+  color: #aebdd0;
+}
+.om-note {
+  font-size: 11px;
+  color: #8d9cb1;
+}
+.om-wide {
+  grid-column: 1/-1;
+}
+.om-notice {
+  color: #59d7ac;
+  min-height: 20px;
+  margin: 10px 0 0;
+  font-size: 12px;
+}
+@media (max-width: 700px) {
+  .om-body {
+    grid-template-columns: 1fr;
+    overflow: auto;
+    display: block;
+  }
+  .om-side {
+    max-height: 260px;
+    border-bottom: 1px solid #29313f;
+  }
+  .om-detail {
+    overflow: visible;
+    padding: 16px;
+  }
+  .om-grid {
+    grid-template-columns: 1fr;
+  }
+  .om-heading {
+    flex-wrap: wrap;
+  }
+  .om-top {
+    padding: 12px;
+    flex-wrap: wrap;
+  }
+  .om-top strong {
+    font-size: 17px;
+  }
+  .om-info {
+    grid-template-columns: 90px 1fr;
+  }
+  .om-card {
+    padding: 16px;
+  }
+}

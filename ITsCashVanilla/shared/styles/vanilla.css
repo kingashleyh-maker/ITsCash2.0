@@ -1,0 +1,28 @@
+dialog.dialog {border:0;color:inherit;margin:auto;max-height:90vh;overflow:auto;width:min(600px,94vw);padding:25px;box-shadow:0 20px 80px #102d4644}dialog.wide{width:min(950px,94vw)}dialog::backdrop{background:#102d4699}.product-detail-image{width:100%;max-height:300px;object-fit:contain}.filters form{display:contents}.form-grid{margin-bottom:15px}.role-copy span{display:block}.toast{z-index:2000}.receipt-qr{width:120px;height:120px}.actions{flex-wrap:wrap}.product-card .image-button{width:100%}.inline-error{color:#a32323}.app-main small{display:block} @media print{body>*:not(#modal-root){display:none!important}dialog{position:static!important;max-height:none!important;box-shadow:none!important}dialog::backdrop{background:white}.no-print{display:none!important}}
+#page-content, .card, .stats > *, .dashboard-grid > *, .store-body > * { min-width: 0; }
+@media (max-width: 750px) { .section-head { flex-wrap: wrap; } .section-head > * { max-width: 100%; } .app-sidebar footer > div { min-width: 0; } .field input, .field select, .field textarea { max-width: 100%; } .page-heading { flex-wrap: wrap; } .filters .field, .filters .field:first-child { min-width: min(220px, 100%); } }
+
+html, body { width: 100%; }
+#app { width: 100%; min-width: 0; }
+#avatar-preview > img, #avatar-preview > span { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin: 10px auto 24px; display: grid; place-items: center; background: #e2ecf4; font-size: 40px; }
+
+/* Sidebar filters must fit the narrow catalog card, not the search toolbar. */
+.catalog-sidebar form {
+  min-width: 0;
+  width: 100%;
+}
+.catalog-sidebar .filters {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+.catalog-sidebar .filters .field,
+.catalog-sidebar .filters .field:first-child {
+  min-width: 0;
+  width: 100%;
+  margin: 0;
+}
+.catalog-sidebar .field select {
+  min-width: 0;
+  max-width: 100%;
+}

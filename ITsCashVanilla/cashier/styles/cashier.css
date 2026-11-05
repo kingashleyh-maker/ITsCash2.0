@@ -1,0 +1,6 @@
+/* Cashier ticket search. */
+.app-layout:has(nav[aria-label="cashier navigation"])
+  .filters
+  .field:first-child {
+  flex: 2;
+}

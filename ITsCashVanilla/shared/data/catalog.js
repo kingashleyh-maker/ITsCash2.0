@@ -1,0 +1,437 @@
+const catalog = [
+  {
+    id: "uniform-gray-shirt",
+    name: "IT / CPE Gray Polo Uniform",
+    category: "Shirts",
+    price: 72e3,
+    stock: {
+      XS: 0,
+      S: 0,
+      M: 0,
+      L: 0,
+      XL: 0,
+      XXL: 0,
+      Unassigned: 12
+    },
+    rating: 4.9,
+    reviews: 211,
+    seller: "STI Campus Store",
+    location: "Quezon City",
+    description: "Gray school uniform shirt with dark collar and cuff details. Available in sizes S to XXL.",
+    image: new URL("../../assets/images/432279836bfc2e.jpg", import.meta.url).href,
+    sizes: ["XS", "S", "M", "L", "XL", "XXL"],
+    tag: "Campus uniform",
+    type: "Polo",
+    program: "IT / CPE",
+    programs: ["IT", "CPE"],
+    code: "STI-001"
+  },
+  {
+    id: "uniform-blue-tee",
+    name: "Blue NSTP T-Shirt",
+    category: "Shirts",
+    price: 32e3,
+    stock: {
+      XS: 0,
+      S: 0,
+      M: 0,
+      L: 0,
+      XL: 0,
+      Unassigned: 24
+    },
+    rating: 4.7,
+    reviews: 176,
+    seller: "NSTP Uniform Hub",
+    location: "Taguig",
+    description: "Blue school activity shirt with the NSTP logo, suited for campus programs and events.",
+    image: new URL("../../assets/images/53ac38afbac037.jpg", import.meta.url).href,
+    sizes: ["XS", "S", "M", "L", "XL"],
+    tag: "Student pick",
+    type: "NSTP uniform",
+    program: "NSTP",
+    programs: ["NSTP"],
+    code: "STI-002"
+  },
+  {
+    id: "uniform-navy-pants",
+    name: "Navy STI Track Pants",
+    category: "Pants",
+    price: 49500,
+    stock: {
+      S: 0,
+      M: 0,
+      L: 0,
+      XL: 0,
+      XXL: 0,
+      Unassigned: 23
+    },
+    rating: 4.8,
+    reviews: 124,
+    seller: "STI Campus Store",
+    location: "Taguig",
+    description: "Comfortable navy track pants for PE and everyday campus wear. Available in sizes S to XXL.",
+    image: new URL("../../assets/images/0a603c60df0d69.jpg", import.meta.url).href,
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    tag: "Campus pick",
+    code: "STI-003",
+    program: "PE",
+    programs: ["PE"]
+  },
+  {
+    id: "uniform-black-pants",
+    name: "HM Black Formal Pants",
+    category: "Pants",
+    price: 65e3,
+    stock: {
+      XS: 0,
+      S: 0,
+      M: 0,
+      L: 0,
+      XL: 0,
+      XXL: 0,
+      Unassigned: 16
+    },
+    rating: 4.7,
+    reviews: 89,
+    seller: "Campus Basics PH",
+    location: "Makati",
+    description: "Clean-cut black uniform pants for presentations, school events, and formal requirements.",
+    image: new URL("../../assets/images/e3c70b11cf6005.jpg", import.meta.url).href,
+    sizes: ["XS", "S", "M", "L", "XL", "XXL"],
+    tag: "Formal uniform",
+    type: "Pants",
+    program: "HM",
+    code: "STI-004",
+    programs: ["HM"]
+  },
+  {
+    id: "uniform-pe-pants",
+    name: "PE Navy Jogger Pants",
+    type: "Physical education uniform",
+    program: "PE",
+    image: new URL("../../assets/images/0a603c60df0d69.jpg", import.meta.url).href,
+    sizes: ["XS", "S", "M", "L", "XL", "XXL"],
+    price: 0,
+    code: "STI-005",
+    programs: ["PE"],
+    stock: {
+      XS: 0,
+      S: 0,
+      M: 0,
+      L: 0,
+      XL: 0,
+      XXL: 0,
+      Unassigned: 0
+    },
+    description: "Physical education uniform",
+    category: "Pants"
+  },
+  {
+    id: "uniform-pe-shirt",
+    name: "PE Gray and Navy Shirt",
+    type: "Physical education uniform",
+    program: "PE",
+    image: new URL("../../assets/images/c886a38aaa057a.jpg", import.meta.url).href,
+    sizes: ["XS", "S", "M", "L", "XL", "XXL"],
+    price: 0,
+    code: "STI-006",
+    programs: ["PE"],
+    stock: {
+      XS: 0,
+      S: 0,
+      M: 0,
+      L: 0,
+      XL: 0,
+      XXL: 0,
+      Unassigned: 0
+    },
+    description: "Physical education uniform",
+    category: "Shirts"
+  },
+  {
+    id: "uniform-tourism-blazer",
+    name: "Tourism Gray Blazer",
+    type: "Blazer",
+    program: "Tourism",
+    image: new URL("../../assets/images/f96b3645b77101.jpg", import.meta.url).href,
+    sizes: ["XS", "S", "M", "L", "XL", "XXL"],
+    price: 0,
+    code: "STI-007",
+    programs: ["Tourism"],
+    stock: {
+      XS: 0,
+      S: 0,
+      M: 0,
+      L: 0,
+      XL: 0,
+      XXL: 0,
+      Unassigned: 0
+    },
+    description: "Blazer",
+    category: "Shirts"
+  },
+  {
+    id: "uniform-tourism-shirt",
+    name: "Tourism White Long-Sleeve Shirt",
+    type: "Polo",
+    program: "Tourism",
+    image: new URL("../../assets/images/b181f1635d1131.jpg", import.meta.url).href,
+    sizes: ["XS", "S", "M", "L", "XL", "XXL"],
+    price: 0,
+    code: "STI-008",
+    programs: ["Tourism"],
+    stock: {
+      XS: 0,
+      S: 0,
+      M: 0,
+      L: 0,
+      XL: 0,
+      XXL: 0,
+      Unassigned: 0
+    },
+    description: "Polo",
+    category: "Shirts"
+  },
+  {
+    id: "uniform-tourism-blouse",
+    name: "Tourism White Long-Sleeve Blouse",
+    type: "Blouse",
+    program: "Tourism",
+    image: new URL("../../assets/images/344ebe34ad2da8.jpg", import.meta.url).href,
+    sizes: ["XS", "S", "M", "L", "XL", "XXL"],
+    price: 0,
+    code: "STI-009",
+    programs: ["Tourism"],
+    stock: {
+      XS: 0,
+      S: 0,
+      M: 0,
+      L: 0,
+      XL: 0,
+      XXL: 0,
+      Unassigned: 0
+    },
+    description: "Blouse",
+    category: "Shirts"
+  },
+  {
+    id: "uniform-tourism-pants",
+    name: "Tourism Gray Trousers",
+    type: "Pants",
+    program: "Tourism",
+    image: new URL("../../assets/images/db9ba3afc38135.jpg", import.meta.url).href,
+    sizes: ["XS", "S", "M", "L", "XL", "XXL"],
+    price: 0,
+    code: "STI-010",
+    programs: ["Tourism"],
+    stock: {
+      XS: 0,
+      S: 0,
+      M: 0,
+      L: 0,
+      XL: 0,
+      XXL: 0,
+      Unassigned: 0
+    },
+    description: "Pants",
+    category: "Pants"
+  },
+  {
+    id: "uniform-tourism-skirt",
+    name: "Tourism Gray Skirt",
+    type: "Skirt",
+    program: "Tourism",
+    image: new URL("../../assets/images/8a2ba344c6b20c.jpg", import.meta.url).href,
+    sizes: ["XS", "S", "M", "L", "XL", "XXL"],
+    price: 0,
+    code: "STI-011",
+    programs: ["Tourism"],
+    stock: {
+      XS: 0,
+      S: 0,
+      M: 0,
+      L: 0,
+      XL: 0,
+      XXL: 0,
+      Unassigned: 0
+    },
+    description: "Skirt",
+    category: "Skirts"
+  },
+  {
+    id: "uniform-tourism-tie",
+    name: "Tourism Yellow Necktie",
+    type: "Accessory",
+    program: "Tourism",
+    image: new URL("../../assets/images/6139f28985aa32.jpg", import.meta.url).href,
+    sizes: ["One size"],
+    price: 0,
+    code: "STI-012",
+    programs: ["Tourism"],
+    stock: {
+      "One size": 0,
+      Unassigned: 0
+    },
+    description: "Accessory",
+    category: "Shirts"
+  },
+  {
+    id: "uniform-tourism-cap",
+    name: "Tourism Gray Cap",
+    type: "Accessory",
+    program: "Tourism",
+    image: new URL("../../assets/images/405d0e001bb4e6.jpg", import.meta.url).href,
+    sizes: ["One size"],
+    price: 0,
+    code: "STI-013",
+    programs: ["Tourism"],
+    stock: {
+      "One size": 0,
+      Unassigned: 0
+    },
+    description: "Accessory",
+    category: "Shirts"
+  },
+  {
+    id: "uniform-tourism-scarf",
+    name: "Tourism Yellow Scarf",
+    type: "Accessory",
+    program: "Tourism",
+    image: new URL("../../assets/images/03cd16f135ecaf.jpg", import.meta.url).href,
+    sizes: ["One size"],
+    price: 0,
+    code: "STI-014",
+    programs: ["Tourism"],
+    stock: {
+      "One size": 0,
+      Unassigned: 0
+    },
+    description: "Accessory",
+    category: "Shirts"
+  },
+  {
+    id: "uniform-hm-skirt",
+    name: "HM Black Formal Skirt",
+    type: "Skirt",
+    program: "HM",
+    image: new URL("../../assets/images/4fae3b8d63e358.jpg", import.meta.url).href,
+    sizes: ["XS", "S", "M", "L", "XL", "XXL"],
+    price: 0,
+    code: "STI-015",
+    programs: ["HM"],
+    stock: {
+      XS: 0,
+      S: 0,
+      M: 0,
+      L: 0,
+      XL: 0,
+      XXL: 0,
+      Unassigned: 0
+    },
+    description: "Skirt",
+    category: "Skirts"
+  },
+  {
+    id: "uniform-hm-chef-jacket",
+    name: "HM Chef Jacket",
+    type: "Chef jacket",
+    program: "HM",
+    image: new URL("../../assets/images/5a13c5865f7681.jpg", import.meta.url).href,
+    sizes: ["XS", "S", "M", "L", "XL", "XXL"],
+    price: 0,
+    code: "STI-016",
+    programs: ["HM"],
+    stock: {
+      XS: 0,
+      S: 0,
+      M: 0,
+      L: 0,
+      XL: 0,
+      XXL: 0,
+      Unassigned: 0
+    },
+    description: "Chef jacket",
+    category: "Shirts"
+  },
+  {
+    id: "uniform-hm-chef-pants",
+    name: "HM Chef Pants",
+    type: "Pants",
+    program: "HM",
+    image: new URL("../../assets/images/363fe3175c2a18.jpg", import.meta.url).href,
+    sizes: ["XS", "S", "M", "L", "XL", "XXL"],
+    price: 0,
+    code: "STI-017",
+    programs: ["HM"],
+    stock: {
+      XS: 0,
+      S: 0,
+      M: 0,
+      L: 0,
+      XL: 0,
+      XXL: 0,
+      Unassigned: 0
+    },
+    description: "Pants",
+    category: "Pants"
+  },
+  {
+    id: "uniform-hm-chef-cap",
+    name: "HM Chef Cap",
+    type: "Accessory",
+    program: "HM",
+    image: new URL("../../assets/images/c77bcd13890f47.jpg", import.meta.url).href,
+    sizes: ["One size"],
+    price: 0,
+    code: "STI-018",
+    programs: ["HM"],
+    stock: {
+      "One size": 0,
+      Unassigned: 0
+    },
+    description: "Accessory",
+    category: "Shirts"
+  },
+  {
+    id: "uniform-hm-apron",
+    name: "HM White and Red Apron",
+    type: "Accessory",
+    program: "HM",
+    image: new URL("../../assets/images/e7ba0e14511463.jpg", import.meta.url).href,
+    sizes: ["One size"],
+    price: 0,
+    code: "STI-019",
+    programs: ["HM"],
+    stock: {
+      "One size": 0,
+      Unassigned: 0
+    },
+    description: "Accessory",
+    category: "Shirts"
+  },
+  {
+    id: "uniform-it-cpe-trousers",
+    name: "IT / CPE Gray Uniform Trousers",
+    type: "Pants",
+    program: "IT / CPE",
+    programs: ["IT", "CPE"],
+    image: new URL("../../assets/images/137174d0b541e6.jpg", import.meta.url).href,
+    sizes: ["XS", "S", "M", "L", "XL", "XXL"],
+    price: 0,
+    code: "STI-020",
+    stock: {
+      XS: 0,
+      S: 0,
+      M: 0,
+      L: 0,
+      XL: 0,
+      XXL: 0,
+      Unassigned: 0
+    },
+    description: "Pants",
+    category: "Pants"
+  }
+];
+export {
+  catalog
+};

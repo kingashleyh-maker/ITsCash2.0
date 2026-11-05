@@ -17,7 +17,7 @@ function render() {
   const list = [...menus[role]];
   if (user()?.role === "Admin") list.push(["accounts", "○", "Accounts"]);
   const cartCount = role === "student" && user()?.role === "Student" ? (db().carts[actor()] || []).reduce((sum, line) => sum + line.qty, 0) : 0;
-  const unread = db().notices.filter((n) => n.studentNumber === user()?.studentNumber && !(n.readBy || []).includes(actor())).length;
+  const unread = db().notices.filter((n) => (role === "cashier" ? n.audience === "Cashier" : n.audience !== "Cashier" && n.studentNumber === user()?.studentNumber) && !(n.readBy || []).includes(actor())).length;
   root.innerHTML = `<div class="app-layout"><aside class="app-sidebar"><a class="app-brand" href="${url(role, "overview")}"><span class="sti-logo">STI</span><span><b>ITsCash</b><small>${role === "student" ? "CAMPUS PORTAL" : `${role.toUpperCase()} WORKSPACE`}</small></span></a><nav aria-label="${role} navigation">${list.map(([key, icon, label]) => `<a href="${url(role, key)}" class="${key === actual ? "active" : ""}" ${key === actual ? 'aria-current="page"' : ""}><span aria-hidden="true">${icon}</span>${label}${key === "cart" && cartCount > 0 ? `<i>${cartCount}</i>` : ""}${key === "notices" && unread > 0 ? `<i>${unread}</i>` : ""}</a>`).join("")}</nav><footer>${user()?.avatar ? `<img class="avatar" src="${esc(image(user().avatar))}" alt="Profile">` : `<span class="avatar">${esc(user()?.name?.[0] || "S")}</span>`}<div><strong>${esc(user()?.name || "Guest")}</strong><small>${esc(user()?.studentNumber || user()?.role || "Browse the campus store")}</small></div>${user() ? button("↪", () => {
     if (confirm("Would you like to sign out?")) {
       sessionStorage.removeItem("itscash_vanilla_actor");
@@ -38,9 +38,13 @@ async function start() {
   render();
   window.addEventListener("storage", (e) => {
     if (e.key === s.KEY) {
+      const previousIds = new Set(db().notices.map(notice => notice.id));
       s.refresh();
       render();
-      toast("Records refreshed from another tab.");
+      const activity = role === "cashier" && guard()
+        ? db().notices.find(notice => notice.audience === "Cashier" && !previousIds.has(notice.id))
+        : null;
+      toast(activity ? `${activity.title}: ${activity.text}` : "Records refreshed from another tab.");
     }
   });
   window.addEventListener("pageshow", (e) => {

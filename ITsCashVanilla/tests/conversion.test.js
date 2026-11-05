@@ -6,7 +6,7 @@ import {fileURLToPath} from 'node:url';
 const root=fileURLToPath(new URL('../',import.meta.url));
 async function files(dir){const items=await readdir(dir,{withFileTypes:true});return (await Promise.all(items.map(item=>item.isDirectory()?files(path.join(dir,item.name)):path.join(dir,item.name)))).flat();}
 test('all role pages, module imports, and stylesheet paths resolve locally',async()=>{
- const list=await files(root);const pages=list.filter(p=>p.endsWith('.html'));assert.equal(pages.length,24);
+ const list=await files(root);const pages=list.filter(p=>p.endsWith('.html'));assert.equal(pages.length,29);
  for(const file of list.filter(p=>/\.(html|js)$/.test(p)&&!p.includes(path.sep+'tests'+path.sep))){
   const source=await readFile(file,'utf8');
   assert.doesNotMatch(source,/from\s*["']react(?:-dom)?(?:\/[^"']*)?["']/);

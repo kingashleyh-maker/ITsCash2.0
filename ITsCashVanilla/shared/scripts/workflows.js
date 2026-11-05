@@ -119,14 +119,16 @@ function orderDetails(o) {
 }
 function notices(target) {
   const staff = role === "cashier";
-  const list = db().notices.filter((n) => staff || n.studentNumber === user().studentNumber);
-  target.innerHTML = heading(staff ? "Student Notifications" : "Notifications", "Payment confirmations and campus pickup updates.") + (staff ? `<section class="card">${form(select("Student", "studentNumber", db().accounts.filter((a) => a.role === "Student").map((a) => [a.studentNumber, `${a.studentNumber} · ${a.name}`])) + field("Title", "title", "", "text", "required") + `<label class="field"><span>Message</span><textarea name="text" rows="3" required></textarea></label>` + submit("Send notification"), async (d) => {
-    await act(() => s.sendNotice(actor(), d.studentNumber, d.title, d.text), "Notification sent.");
-    notices(target);
-  })}</section>` : button("Mark all as read", async () => {
+  const activity = db().notices.filter(notice => notice.audience === "Cashier");
+  const list = db().notices.filter(notice => notice.audience !== "Cashier" && (staff || notice.studentNumber === user().studentNumber));
+  const cards = (items, showUnread) => items.length ? items.map(notice => `<section class="card"><div class="section-head"><h3>${esc(notice.title)}</h3>${showUnread && !(notice.readBy || []).includes(actor()) ? badge("Unread") : ""}</div><p>${esc(notice.text)}</p><small>${esc(notice.studentNumber)} &middot; ${esc(s.dateText(notice.at))}</small></section>`).join("") : empty();
+  const markRead = () => button("Mark all as read", async () => {
     await act(() => s.markRead(actor()), "Notifications marked read.");
-    notices(target);
-  })) + (list.length ? list.map((n) => `<section class="card"><div class="section-head"><h3>${esc(n.title)}</h3>${!staff && !(n.readBy || []).includes(actor()) ? badge("Unread") : ""}</div><p>${esc(n.text)}</p><small>${esc(n.studentNumber)} · ${esc(s.dateText(n.at))}</small></section>`).join("") : empty());
+  });
+  target.innerHTML = heading(staff ? "Cashier Notifications" : "Notifications", staff ? "Student orders, payment updates, and messages to students." : "Payment confirmations and campus pickup updates.") +
+    (staff ? `<section id="cashier-notifications"><div class="section-head"><h2>Student activity</h2>${markRead()}</div>${cards(activity, true)}</section><section class="card"><h2>Send a student notification</h2>${form(select("Student", "studentNumber", db().accounts.filter(account => account.role === "Student").map(account => [account.studentNumber, `${account.studentNumber} - ${account.name}`])) + field("Title", "title", "", "text", "required") + '<label class="field"><span>Message</span><textarea name="text" rows="3" required></textarea></label>' + submit("Send notification"), async data => {
+      await act(() => s.sendNotice(actor(), data.studentNumber, data.title, data.text), "Notification sent.");
+    })}</section><h2>Student notification history</h2>${cards(list, false)}` : markRead() + cards(list, true));
 }
 function accounts(target) {
   if (user().role !== "Admin") {

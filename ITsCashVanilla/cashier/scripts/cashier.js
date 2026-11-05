@@ -8,6 +8,17 @@ function render(target, page) {
   if (page === "tuition") return tuition(target);
   const active = db().tickets.filter((t) => !t.closedAt), total = db().transactions.filter((t) => t.status === "Successful").reduce((n, t) => n + t.amount, 0);
   target.innerHTML = heading(page === "tickets" ? "Checkout Tickets" : "Cashier Dashboard", "Monitor student tuition payments and uniform checkout tickets.") + (page === "tickets" ? "" : `<div class="stats four">${stat("PENDING CHECKOUT TICKETS", active.filter((t) => !t.acknowledgedAt).length)}${stat("UNPAID TRANSACTIONS", db().orders.filter((o) => o.status === "Awaiting Payment").length + db().assessments.filter((a) => s.dueFor(db(), "Tuition", a.id) > 0).length)}${stat("PAID TRANSACTIONS", db().transactions.filter((t) => t.status === "Successful").length, `${s.money(total)} verified`)}${stat("READY FOR PICKUP", db().orders.filter((o) => o.status === "Ready for Pickup").length)}</div>`) + `<div id="ticket-queue"></div>`;
+  if (page !== "tickets") {
+    const activity = db().notices.filter(notice => notice.audience === "Cashier").slice(0, 8);
+    const panel = document.createElement("section");
+    panel.className = "card";
+    panel.id = "cashier-activity";
+    panel.innerHTML = `<div class="section-head"><h2>Recent student activity</h2>${link("View all notifications", "cashier", "notices")}</div>${activity.length ? table(["Update", "Student", "Details", "Time"], activity.map(notice => cell(
+      `${esc(notice.title)} ${!(notice.readBy || []).includes(actor()) ? badge("Unread") : ""}`,
+      esc(db().accounts.find(account => account.studentNumber === notice.studentNumber)?.name || notice.studentNumber),
+      esc(notice.text), esc(s.dateText(notice.at))))) : empty("New uniform orders and tuition payments will appear here.")}`;
+    target.querySelector("#ticket-queue").before(panel);
+  }
   tickets(target.querySelector("#ticket-queue"));
 }
 function tuition(target) {

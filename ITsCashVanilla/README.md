@@ -22,11 +22,14 @@ Accounts initialize automatically. Refresh an already-open page to install Cashi
 
 ## Organization
 
-- `index.html`: role selection.
-- `student/pages`, `student/scripts`, `student/styles`: dashboard, tuition, catalog, cart, purchases, history, notifications, profile, login and registration entry pages.
+- `index.html`: main entry point.
+- `login/pages/index.html`: login role selection.
+- `login/pages/student-login.html`, `cashier-login.html`, `proware-login.html`: role sign-in pages.
+- `login/pages/register.html`: student registration.
+- `student/pages`, `student/scripts`, `student/styles`: dashboard, tuition, catalog, cart, purchases, history, notifications, profile, and compatibility links to login/registration.
 - `cashier/pages`, `cashier/scripts`, `cashier/styles`: dashboard, tickets, assessments, orders, history, notifications and login.
 - `proware/pages`, `proware/scripts`, `proware/styles`: dashboard, inventory, pickup orders and login.
-- `login/scripts`, `login/styles`: shared role selection and authentication presentation.
+- `login/pages`, `login/scripts`, `login/styles`: role selection, sign-in, registration, scripts and styling.
 - `shared/scripts`: native DOM helpers, startup/session/navigation, payment/order workflows, and business rules.
 - `shared/data`: original 20-product catalog.
 - `shared/styles`: shared responsive styling and native dialog additions.
@@ -50,3 +53,6 @@ Only existing Admin accounts can manage accounts/refunds, as in the source app. 
 The converted app uses `itscash_vanilla_v1` and `itscash_vanilla_actor`. It does not overwrite the React keys (`itscash_react_v2`, `itscash_actor`). Different localhost ports are different browser origins and keep separate records. Use the same Live Server URL for all roles. Each tab has its own signed-in actor; use separate tabs to operate Student, Cashier and Proware together. Original legacy storage migration remains supported without deleting original legacy keys.
 
 Digital payment success/failure controls are simulations. No actual funds move. Receipts and statements can be printed or saved as PDF with the browser print dialog.
+
+
+Cashier updates: student uniform orders and payment status changes appear automatically in the Cashier dashboard activity panel and Notifications. Digital tuition payments also create cashier queue entries. Pending or failed digital payments do not reduce balances. Keep Student and Cashier open in separate tabs at the same Live Server origin to receive live updates. Browser-local storage does not synchronize across devices or different browser profiles.

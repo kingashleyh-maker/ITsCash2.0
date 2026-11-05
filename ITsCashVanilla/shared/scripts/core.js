@@ -6,7 +6,13 @@ const db = () => s.getState();
 const actor = () => sessionStorage.getItem("itscash_vanilla_actor") || "";
 const user = () => db().accounts.find((a) => a.id === actor() && a.active !== false);
 const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
-const url = (r = "", p = "overview") => new URL(r ? `${r}/pages/${p}.html` : "index.html", base).href;
+const url = (r = "", p = "overview") => {
+  const path = !r ? "login/pages/index.html"
+    : p === "login" ? `login/pages/${r}-login.html`
+    : r === "student" && p === "register" ? "login/pages/register.html"
+    : `${r}/pages/${p}.html`;
+  return new URL(path, base).href;
+};
 const go = (r, p) => {
   location.href = url(r, p);
 };

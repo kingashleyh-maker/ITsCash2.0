@@ -207,6 +207,12 @@ function notice(db, number, title, text) {
     readBy: []
   });
 }
+function cashierNotice(db, number, title, text, details = {}) {
+  db.notices.unshift({
+    id: id("NOTICE"), at: now(), studentNumber: number, title, text,
+    audience: "Cashier", readBy: [], ...details
+  });
+}
 async function passwordHash(password, salt) {
   const key = await crypto.subtle.importKey(
     "raw",
@@ -392,6 +398,9 @@ function placeOrder(actor, contact, method) {
       "Uniform order placed",
       `${order.id} · ${money(order.total)} · Awaiting payment.`
     );
+    cashierNotice(db, a.studentNumber, "New uniform order",
+      `${a.name} placed ${order.id} for ${money(order.total)}. Awaiting payment.`,
+      { recordId: order.id, purpose: "Uniform", status: "Awaiting Payment" });
     return order.id;
   });
 }
@@ -585,6 +594,11 @@ function beginPayment(actor, purpose, recordId, values) {
       t.verifiedAt = now();
     }
     db.transactions.unshift(t);
+    // Digital student payments also belong in the cashier queue.
+    if (a.role === "Student" && !db.tickets.some(ticket => ticket.recordId === recordId && !ticket.closedAt)) {
+      db.tickets.unshift({ id: id("TICKET"), purpose, recordId,
+        studentNumber: r.studentNumber, at: now(), notes: [] });
+    }
     finishPayment(db, t);
     return t.id;
   });
@@ -611,6 +625,9 @@ function finishPayment(db, t) {
     `Payment ${t.status.toLowerCase()}`,
     `${t.purpose} · ${money(t.amount)} · ${t.id}`
   );
+  cashierNotice(db, t.studentNumber, `${t.purpose} payment ${t.status.toLowerCase()}`,
+    `${t.studentName} - ${money(t.amount)} via ${t.method}. Reference: ${t.reference}. ${t.status === "Pending" ? "Awaiting verification; balance is unchanged." : `Status: ${t.status}. Remaining balance: ${money(dueFor(db, t.purpose, recordId))}.`}`,
+    { recordId, transactionId: t.id, purpose: t.purpose, status: t.status });
 }
 function resolvePayment(actor, transactionId, result) {
   commit((db) => {
@@ -703,9 +720,15 @@ function saveStock(actor, productId, stock, price) {
 function markRead(actor) {
   commit((db) => {
     const a = requireRole(db, actor, ["Student", ...staffRoles, "Proware"]);
-    for (const n of db.notices)
-      if (n.studentNumber === a.studentNumber && !n.readBy.includes(a.id))
-        n.readBy.push(a.id);
+    for (const n of db.notices) {
+      const visible = a.role === "Student"
+        ? n.audience !== "Cashier" && n.studentNumber === a.studentNumber
+        : staffRoles.includes(a.role) && n.audience === "Cashier";
+      if (visible) {
+        n.readBy ||= [];
+        if (!n.readBy.includes(a.id)) n.readBy.push(a.id);
+      }
+    }
   });
 }
 function sendNotice(actor, number, title, text) {

@@ -22,7 +22,32 @@ try{
  const evaluate=async expression=>{const r=await send('Runtime.evaluate',{expression,awaitPromise:true,returnByValue:true});if(r.exceptionDetails)throw Error(r.exceptionDetails.exception?.description||r.exceptionDetails.text);return r.result.value;};
  const wait=async expression=>{for(let i=0;i<100;i++){try{if(await evaluate(expression))return;}catch{}await delay(50);}throw Error(`Timed out: ${expression}`);};
  const base=`http://127.0.0.1:${serverPort}/ITsCashVanilla/`;
- const nav=async route=>{await send('Page.navigate',{url:base+route});await wait('document.readyState === "complete" && document.querySelector(".login-shell,.auth-card,#page-content")');await delay(100);assert.equal(await evaluate('!!document.querySelector(".inline-error")'),false);};
+ let monitorSocket;
+ const openCashierMonitor = async () => {
+  await send('Runtime.evaluate',{expression:`window.open(${JSON.stringify(base+'login/pages/cashier-login.html')}, 'cashier-live-monitor'); void 0`,userGesture:true});
+  let monitorTarget;
+  for(let i=0;i<100;i++){
+    const targets=await(await fetch(`http://127.0.0.1:${debugPort}/json`)).json();
+    monitorTarget=targets.find(target=>target.type==='page'&&target.url===base+'login/pages/cashier-login.html');
+    if(monitorTarget)break;
+    await delay(50);
+  }
+  if(!monitorTarget)throw Error('Cashier monitor tab did not open');
+  monitorSocket=new WebSocket(monitorTarget.webSocketDebuggerUrl);
+  await new Promise(resolve=>monitorSocket.onopen=resolve);
+  let nextId=0;const calls=new Map();
+  monitorSocket.onmessage=event=>{const message=JSON.parse(event.data);if(message.id){const call=calls.get(message.id);if(call){calls.delete(message.id);call(message);}}};
+  const evaluate=expression=>new Promise((resolve,reject)=>{const id=++nextId;const timer=setTimeout(()=>{calls.delete(id);reject(Error('Cashier monitor timed out'));},10000);calls.set(id,message=>{clearTimeout(timer);const result=message.result;if(message.error||result?.exceptionDetails)reject(Error(JSON.stringify(message.error||result.exceptionDetails)));else resolve(result.result.value);});monitorSocket.send(JSON.stringify({id,method:'Runtime.evaluate',params:{expression,awaitPromise:true,returnByValue:true}}));});
+  for(let i=0;i<100;i++){try{if(await evaluate('!!document.querySelector("form")'))break;}catch{}await delay(50);}
+  await evaluate(`(async()=>{const s=await import(${JSON.stringify(base+'shared/scripts/store.js')});const id=await s.signIn('Cashier2','123456789','cashier');sessionStorage.setItem('itscash_vanilla_actor',id);})()`);
+  await evaluate(`location.href=${JSON.stringify(base+'cashier/pages/overview.html')}`);
+  const waitFor=async expression=>{for(let i=0;i<100;i++){try{if(await evaluate(expression))return;}catch{}await delay(50);}throw Error('Cashier tab did not update: '+expression);};
+  await waitFor('!!document.querySelector("#cashier-activity")');
+  await send('Page.bringToFront');
+  return {evaluate,waitFor};
+ };
+
+ const nav=async route=>{route=route.replace(/^(student|cashier|proware)\/pages\/login\.html$/, 'login/pages/$1-login.html').replace('student/pages/register.html','login/pages/register.html');await send('Page.navigate',{url:base+route});await wait('document.readyState === "complete" && document.querySelector(".login-shell,.auth-card,#page-content")');await delay(100);assert.equal(await evaluate('!!document.querySelector(".inline-error")'),false);};
  const click=async text=>{await evaluate(`(()=>{const el=[...document.querySelectorAll('button,a')].find(x=>x.textContent.trim()===${JSON.stringify(text)});if(!el)throw Error('Missing control: '+${JSON.stringify(text)});el.click();})()`);await delay(100);};
  const fill=async values=>{await evaluate(`(()=>{for(const [name,value] of Object.entries(${JSON.stringify(values)})){const el=document.querySelector('dialog[open] [name="'+name+'"]')||document.querySelector('[name="'+name+'"]');if(!el)throw Error('Missing input '+name);el.value=value;el.dispatchEvent(new Event('change',{bubbles:true}));}})()`);};
  const submit=async()=>{await evaluate('(document.querySelector("dialog[open] form")||document.querySelector("form")).requestSubmit()');await delay(200);};
@@ -35,15 +60,26 @@ try{
  }
  console.log('PASS catalog sidebar dropdowns stay inside their card at desktop, tablet, and mobile widths');
  await send('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
- await login('proware');await click('Edit stock & price');await fill({'stock-M':'12','stock-Unassigned':'0',price:'720.00'});
+ await login('proware');
+ assert.equal(await evaluate('document.querySelectorAll("#page-content table, #page-content .filters").length'),0);
+ assert.ok((await evaluate('document.querySelector("#page-content").innerText')).includes('Stock status summary'));
+ await nav('proware/pages/inventory.html');
+ assert.equal(await evaluate('document.querySelectorAll("#page-content .stats").length'),0);
+ for(const status of ['Low Stock','Out of Stock','In Stock']) {
+  await fill({filter:status});
+  assert.equal(await evaluate(`JSON.stringify([...document.querySelectorAll('#inventory-results tbody tr .badge')].map(el=>el.textContent).filter(label=>label!==${JSON.stringify(status)}))`),'[]');
+ }
+ await fill({filter:'Low Stock'});
+ console.log('PASS separate Proware overview and inventory, and immediate stock-status filtering');
+ await click('Edit stock & price');await fill({'stock-M':'12','stock-Unassigned':'0',price:'720.00'});
  // Native confirmation dialogs are accepted through CDP for the test.
- await evaluate('window.confirm=()=>true');await submit();assert.equal(await evaluate('document.querySelectorAll("dialog[open]").length'),0);console.log('PASS Proware sign-in and stock update');
- await login('student');await nav('student/pages/store.html');await evaluate('document.querySelector(".product-bottom button").click()');await fill({size:'M',qty:'2'});await submit();assert.equal(await evaluate('document.querySelector(".store-cart-link .cart-count").textContent'),'2');await evaluate('document.querySelector(".store-cart-link").click()');await wait('location.pathname.endsWith("cart.html") && !!document.querySelector(".cart-item")');assert.ok((await evaluate('document.body.innerText')).includes('1,440.00'));
- await click('Checkout ticket');await evaluate('window.confirm=()=>true');await submit();await wait('location.pathname.endsWith("orders.html") && !!document.querySelector("#page-content")');assert.ok((await evaluate('document.body.innerText')).includes('Awaiting Payment'));console.log('PASS Student catalog, size selection, cart, checkout, orders');
- await login('cashier');await nav('cashier/pages/tickets.html');await click('Open ticket');await click('Acknowledge ticket');await fill({note:'Browser smoke check'});await submit();await click('Record payment');await fill({received:'1500'});await submit();await click('View receipt');await wait('!!document.querySelector(".receipt-qr[src]")');assert.ok((await evaluate('document.querySelector("dialog").innerText')).includes('60.00'));await evaluate('document.querySelector("dialog[open] .dialog-head button").click()');console.log('PASS Cashier acknowledgment, notes, cash payment, change and QR receipt');
+ await evaluate('window.confirm=()=>true');await submit();assert.equal(await evaluate('document.querySelectorAll("dialog[open]").length'),0);assert.equal(await evaluate('document.querySelector("[name=filter]").value'),'Low Stock');console.log('PASS Proware sign-in, stock update, and preserved status filter');
+ await login('student');const monitor=await openCashierMonitor();await nav('student/pages/store.html');await evaluate('document.querySelector(".product-bottom button").click()');await fill({size:'M',qty:'2'});await submit();assert.equal(await evaluate('document.querySelector(".store-cart-link .cart-count").textContent'),'2');await evaluate('document.querySelector(".store-cart-link").click()');await wait('location.pathname.endsWith("cart.html") && !!document.querySelector(".cart-item")');assert.ok((await evaluate('document.body.innerText')).includes('1,440.00'));
+ await click('Checkout ticket');await evaluate('window.confirm=()=>true');await submit();await wait('location.pathname.endsWith("orders.html") && !!document.querySelector("#page-content")');assert.ok((await evaluate('document.body.innerText')).includes('Awaiting Payment'));await monitor.waitFor('document.querySelector("#cashier-activity tbody")?.innerText.includes("New uniform order")');assert.ok(await monitor.evaluate('[...document.querySelectorAll("nav a")].some(link=>link.href.endsWith("/notices.html") && link.querySelector("i"))'));console.log('PASS Student checkout automatically updates an already-open Cashier tab and unread badge');
+ await login('cashier');await nav('cashier/pages/tickets.html');await click('Open ticket');await click('Acknowledge ticket');await fill({note:'Browser smoke check'});await submit();await click('Record payment');await fill({received:'1500'});await submit();await click('View receipt');await wait('!!document.querySelector(".receipt-qr[src]")');assert.ok((await evaluate('document.querySelector("dialog[open]").innerText')).includes('60.00'));await evaluate('document.querySelector("dialog[open] .dialog-head button").click()');console.log('PASS Cashier acknowledgment, notes, cash payment, change and QR receipt');
  await nav('cashier/pages/tuition.html');await evaluate('[...document.querySelectorAll("button")].find(b=>b.textContent.includes("Add assessment")).click()');const studentId=await evaluate('[...document.querySelector("[name=studentId]").options].find(o=>o.value).value');await fill({studentId,tuition:'1000',misc:'100',plan:'Installment',dueDate:'2026-11-30'});await submit();assert.ok((await evaluate('document.body.innerText')).includes('1,100.00'));console.log('PASS tuition assessment creation');
  await login('proware');await nav('proware/pages/orders.html');await evaluate('window.confirm=()=>true');await click('Ready for Pickup');await click('Mark Claimed');assert.ok((await evaluate('document.body.innerText')).includes('Claimed'));console.log('PASS paid pickup preparation and handover');
- await login('student');await nav('student/pages/tuition.html');await click('Pay / cashier ticket');await fill({method:'GCash',option:'Installment',amount:'100',reference:'BROWSER-QA-001'});await submit();await click('Simulate successful');await click('View receipt');await evaluate('document.querySelector("dialog[open] .dialog-head button").click()');console.log('PASS Student simulated digital installment payment');
+ await login('student');await nav('student/pages/tuition.html');await click('Pay / cashier ticket');await fill({method:'GCash',option:'Installment',amount:'100',reference:'BROWSER-QA-001'});await submit();await monitor.waitFor('document.querySelector("#cashier-activity").innerText.includes("Tuition payment pending")');await click('Simulate successful');await click('View receipt');await evaluate('document.querySelector("dialog[open] .dialog-head button").click()');await monitor.waitFor('document.querySelector("#cashier-activity").innerText.includes("Tuition payment successful")');console.log('PASS live Cashier tuition payment notifications without refreshing the Cashier tab');monitorSocket.close();
  for(const [r,pages] of Object.entries({student:['overview','tuition','store','cart','orders','history','notices','profile'],cashier:['overview','tickets','tuition','orders','history','notices'],proware:['overview','inventory','orders']})){
   await login(r);for(const page of pages){await nav(`${r}/pages/${page}.html`);assert.ok((await evaluate('document.querySelector("#page-content").innerText.length'))>10,`${r}/${page}`);const broken=await evaluate('[...document.images].filter(i=>i.src&&!i.complete||i.src&&i.complete&&i.naturalWidth===0).map(i=>i.src)');assert.deepEqual(broken,[]);}
  }

@@ -391,3 +391,37 @@ test("requested staff accounts upgrade saved browsers and retain records", async
   await s.initializeAccounts();
   assert.equal(JSON.stringify(s.getState()), snapshot);
 });
+
+
+test("student orders notify Cashier without marking student notices read", () => {
+  const productId = fixture();
+  const orderId = order(productId);
+  const alert = s.getState().notices.find(notice => notice.audience === "Cashier" && notice.recordId === orderId);
+  assert.ok(alert);
+  assert.equal(alert.status, "Awaiting Payment");
+  s.markRead("student");
+  assert.deepEqual(s.getState().notices.find(notice => notice.id === alert.id).readBy, []);
+  s.markRead("cashier");
+  assert.deepEqual(s.getState().notices.find(notice => notice.id === alert.id).readBy, ["cashier"]);
+  assert.ok(s.getState().notices.filter(notice => notice.audience === "Student").every(notice => !notice.readBy.includes("cashier")));
+});
+
+test("digital tuition payments reach Cashier queue and preserve pending balances", () => {
+  fixture();
+  const id = s.beginPayment("student", "Tuition", "term", {method: "GCash", amount: "100", reference: "student-digital", option: "Installment"});
+  assert.equal(s.dueFor(s.getState(), "Tuition", "term"), 1000000);
+  assert.equal(s.getState().tickets.filter(ticket => ticket.recordId === "term").length, 1);
+  assert.ok(s.getState().notices.some(notice => notice.audience === "Cashier" && notice.transactionId === id && notice.status === "Pending"));
+  s.resolvePayment("student", id, "Successful");
+  assert.equal(s.dueFor(s.getState(), "Tuition", "term"), 990000);
+  assert.ok(s.getState().notices.some(notice => notice.audience === "Cashier" && notice.transactionId === id && notice.status === "Successful"));
+  assert.equal(s.getState().tickets.filter(ticket => ticket.recordId === "term").length, 1);
+});
+
+test("failed tuition payment alerts Cashier without reducing balance", () => {
+  fixture();
+  const id = s.beginPayment("student", "Tuition", "term", {method: "Maya", amount: "100", reference: "student-failed", option: "Installment"});
+  s.resolvePayment("student", id, "Failed");
+  assert.equal(s.dueFor(s.getState(), "Tuition", "term"), 1000000);
+  assert.ok(s.getState().notices.some(notice => notice.audience === "Cashier" && notice.transactionId === id && notice.status === "Failed"));
+});

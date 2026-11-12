@@ -1,4 +1,6 @@
 import { catalog } from "../data/catalog.js";
+import { authClient } from "./auth-client.js";
+const sqlBackend = authClient.enabled;
 const KEY = "itscash_vanilla_v1";
 const copy = (value) => structuredClone(value);
 const id = (prefix) => `${prefix}-${crypto.randomUUID()}`;
@@ -243,7 +245,13 @@ async function credentials(password) {
   return { salt, hash: await passwordHash(password, salt) };
 }
 function addAccount(db, fields, credential) {
-  const username = fields.username.trim().toLowerCase();
+  // Keep legacy usernames internally; new email-only accounts get an internal ID.
+  const username = fields.username?.trim().toLowerCase() || id("user");
+  const email = fields.email?.trim().toLowerCase() || "";
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+    throw Error("Enter a valid school email.");
+  if (db.accounts.some((a) => a.email?.trim().toLowerCase() === email))
+    throw Error("That school email is already registered.");
   if (!/^[a-z0-9._-]{3,50}$/.test(username))
     throw Error(
       "Username must contain 3–50 letters, numbers, dots, underscores, or hyphens."
@@ -259,6 +267,7 @@ function addAccount(db, fields, credential) {
   const a = {
     ...fields,
     username,
+    email,
     name: fields.name.trim(),
     studentNumber: fields.studentNumber?.trim() || "",
     ...credential,
@@ -270,9 +279,17 @@ function addAccount(db, fields, credential) {
   return a.id;
 }
 async function register(fields, password, actor = null) {
+  if (sqlBackend) {
+    const result = await authClient.register(fields, password);
+    applySqlSession(result);
+    return result.value;
+  }
+  // Student access must be provisioned by an administrator, never self-registered.
+  if (fields.role === "Student") requireRole(getState(), actor, ["Admin"]);
   const credential = await credentials(password);
   return commit((db) => {
-    if (fields.role !== "Student") {
+    if (fields.role === "Student") requireRole(db, actor, ["Admin"]);
+    else {
       if (db.accounts.some((a) => a.role === "Admin" && a.active !== false))
         requireRole(db, actor, ["Admin"]);
       else if (fields.role !== "Admin")
@@ -281,34 +298,49 @@ async function register(fields, password, actor = null) {
     return addAccount(db, fields, credential);
   });
 }
-async function signIn(username, password, workspace) {
+async function signIn(identifier, password, workspace = "auto") {
+  if (sqlBackend) {
+    const result = await authClient.signIn(identifier, password, workspace);
+    applySqlSession(result);
+    return result.actor;
+  }
+  const normalized = identifier.trim().toLowerCase();
   const account = getState().accounts.find(
-    (a) => a.username.toLowerCase() === username.trim().toLowerCase() && a.active !== false
+    (a) => a.active !== false && a.email?.trim().toLowerCase() === normalized
   );
   if (!account || await passwordHash(password, account.salt) !== account.hash)
-    throw Error("Username or password is incorrect.");
-  const roles = workspace === "student" ? ["Student"] : workspace === "cashier" ? ["Cashier", "Admin"] : ["Proware", "Inventory Staff", "Admin"];
+    throw Error("School email or password is incorrect.");
+  const roles = workspace === "auto" ? ["Student", "Cashier", "Proware", "Inventory Staff", "Admin"]
+    : workspace === "student" ? ["Student"] : workspace === "cashier" ? ["Cashier", "Admin"]
+    : workspace === "proware" ? ["Proware", "Inventory Staff", "Admin"] : [];
   if (!roles.includes(account.role))
     throw Error(`This account cannot access the ${workspace} workspace.`);
   return account.id;
 }
+function updateAvatar(actor, avatar) {
+  if (sqlBackend) return authClient.updateAvatar(avatar).then(applySqlSession);
+  return commit((db) => {
+    const account = requireRole(db, actor, ["Student", "Cashier", "Proware", "Inventory Staff", "Admin"]);
+    if (typeof avatar !== "string" || avatar.length > 14_000_000 || (avatar && !/^data:image\/(jpeg|png);base64,[A-Za-z0-9+/]+={0,2}$/.test(avatar)))
+      throw Error("Choose a JPEG or PNG image up to 10 MB.");
+    account.avatar = avatar;
+  });
+}
 function updateProfile(actor, fields) {
+  if (sqlBackend) return authClient.updateProfile(fields).then(applySqlSession);
   return commit((db) => {
     const a = requireRole(db, actor, ["Student"]);
-    for (const key of ["name", "email", "phone", "course", "year"])
-      if (!fields[key]?.trim())
-        throw Error("Complete your name, email, phone, course, and year.");
-    for (const key of [
-      "name",
-      "email",
-      "phone",
-      "course",
-      "year",
-      "gender",
-      "dateOfBirth",
-      "avatar"
-    ])
-      if (key in fields) a[key] = fields[key];
+    const username = (fields.username ?? a.username ?? "").trim();
+    if (username && !/^[A-Za-z0-9._-]{3,50}$/.test(username)) throw Error("Use 3–50 letters, numbers, dots, underscores, or hyphens for your username.");
+    if (username && db.accounts.some(other => other.id !== a.id && other.username?.toLowerCase() === username.toLowerCase())) throw Error("That username is already registered.");
+    const phone = (fields.phone ?? a.phone ?? "").trim();
+    if (phone.length > 30) throw Error("Use up to 30 characters for your phone number.");
+    const gender = fields.gender ?? a.gender ?? "Prefer not to say";
+    if (!["Male", "Female", "Other", "Prefer not to say"].includes(gender)) throw Error("Choose a valid gender option.");
+    const birthdate = fields.dateOfBirth ?? a.dateOfBirth ?? "";
+    if (birthdate && (!/^\d{4}-\d{2}-\d{2}$/.test(birthdate) || !Number.isFinite(Date.parse(birthdate)) || birthdate > new Date(Date.now() + 8 * 3600000).toISOString().slice(0, 10))) throw Error("Enter a valid date of birth.");
+    // School-managed fields and photos cannot be changed through this endpoint.
+    Object.assign(a, { username, phone, gender, dateOfBirth: birthdate });
   });
 }
 function toggleSaved(actor, productId) {
@@ -740,7 +772,18 @@ function sendNotice(actor, number, title, text) {
   });
 }
 let accountSetup;
+// Account credentials stay in SQL Server. The browser receives only display/profile data.
+function applySqlSession(result) {
+  getState().accounts = result.accounts;
+  if (result.actor) sessionStorage.setItem("itscash_vanilla_actor", result.actor);
+  else sessionStorage.removeItem("itscash_vanilla_actor");
+}
+async function signOut() {
+  if (sqlBackend) applySqlSession(await authClient.signOut());
+  sessionStorage.removeItem("itscash_vanilla_actor");
+}
 function initializeAccounts() {
+  if (sqlBackend) return authClient.session().then(applySqlSession);
   if (getState().roleAccountsVersion >= 2) return Promise.resolve();
   if (accountSetup) return accountSetup;
   accountSetup = (async () => {
@@ -823,10 +866,13 @@ export {
   sendNotice,
   setOrderStatus,
   signIn,
+  signOut,
+  sqlBackend,
   submitTicket,
   subscribe,
   ticketNote,
   toggleSaved,
   totalStock,
-  updateProfile
+  updateProfile,
+  updateAvatar
 };

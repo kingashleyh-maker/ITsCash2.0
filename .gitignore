@@ -1,0 +1,14 @@
+**/bin/
+**/obj/
+**/.packages/
+**/.tools/
+**/.data-protection/
+**/node_modules/
+**/appsettings.Local.json
+*.user
+*.log
+*.mdf
+*.ldf
+*.bak
+.env
+.env.*

@@ -6,9 +6,12 @@ function render(target, page) {
     target.innerHTML = heading("My Purchase") + empty("Sign in to view your orders.") + link("Sign in", "student", "login", "button primary");
     return;
   }
-  if (page === "cart") return cart(target);
-  if (page === "profile") return profile(target);
-  if (page === "orders") return orders(target);
+  if (page === "orders" || page === "cart") {
+    target.innerHTML = '<div class="purchase-orders"></div><section id="shopping-cart" class="purchase-cart" aria-label="Shopping cart"></section>';
+    orders(target.querySelector(".purchase-orders"));
+    cart(target.querySelector(".purchase-cart"));
+    return;
+  }
   if (page === "history") return transactions(target);
   if (page === "notices") return notices(target);
   const assessments = db().assessments.filter((a) => a.studentNumber === user().studentNumber);
@@ -17,13 +20,13 @@ function render(target, page) {
     return;
   }
   const list = db().orders.filter((o) => o.studentNumber === user().studentNumber), lines = db().carts[actor()] || [], total = lines.reduce((n, l) => n + (db().products.find((p) => p.id === l.productId)?.price || 0) * l.qty, 0);
-  target.innerHTML = heading("Student Financial Dashboard", "Manage your school fees, installment balance, and uniform orders in one place.", button("↓ Statement of Account", statement) + link("＋ Quick Payment", "student", "tuition", "button primary")) + `<div class="stats">${stat("REMAINING TUITION", s.money(assessments.reduce((n, a) => n + s.dueFor(db(), "Tuition", a.id), 0)), assessments.length ? `${assessments.length} academic term(s)` : "No assessment assigned")}${stat("UNIFORM CART & ORDERS", s.money(total + list.filter((o) => o.status === "Awaiting Payment").reduce((n, o) => n + o.total, 0)), `${list.filter((o) => o.status === "Ready for Pickup").length} ready for pickup · ${lines.length} cart lines`)}${stat("TUITION PAID", s.money(assessments.reduce((n, a) => n + s.paidFor(db(), "Tuition", a.id), 0)), "Verified payments only")}</div><div class="dashboard-grid"><div><div class="section-head"><h2>Tuition Installment Plan</h2>${link("View all →", "student", "tuition")}</div>${assessments[0] ? assessment(assessments[0]) : `<section class="card">${empty("Your assigned tuition will appear here.")}</section>`}</div><section class="card"><div class="section-head"><div><h2>Campus Apparel & Uniforms</h2><p>Ready for your next campus day</p></div>${link("Uniform Store →", "student", "store")}</div><div class="dashboard-products">${db().products.slice(0, 2).map((p) => `<article><img src="${esc(image(p.image))}" alt="${esc(p.name)}"><h3>${esc(p.name)}</h3><p>Sizes: ${esc(p.sizes.join(", "))}</p><div class="line"><b>${s.money(p.price)}</b>${button("Choose size", () => product(p.id))}</div></article>`).join("")}</div><div class="cart-total"><div><small>Selected items (${lines.reduce((n, l) => n + l.qty, 0)})</small><strong>${s.money(total)}</strong></div>${link("View Cart", "student", "cart", "button primary")}</div></section></div>`;
+  target.innerHTML = heading("Student Financial Dashboard", "Manage your school fees, installment balance, and uniform orders in one place.", button("↓ Statement of Account", statement) + link("＋ Quick Payment", "student", "tuition", "button primary")) + `<div class="stats">${stat("REMAINING TUITION", s.money(assessments.reduce((n, a) => n + s.dueFor(db(), "Tuition", a.id), 0)), assessments.length ? `${assessments.length} academic term(s)` : "No assessment assigned")}${stat("UNIFORM CART & ORDERS", lines.reduce((count, line) => count + line.qty, 0) + list.filter((order) => order.status === "Awaiting Payment").reduce((count, order) => count + order.items.reduce((units, item) => units + item.qty, 0), 0), `${list.filter((o) => o.status === "Ready for Pickup").length} ready for pickup · ${lines.length} cart lines`)}${stat("TUITION PAID", s.money(assessments.reduce((n, a) => n + s.paidFor(db(), "Tuition", a.id), 0)), "Verified payments only")}</div><div class="dashboard-grid"><div><div class="section-head"><h2>Tuition Installment Plan</h2>${link("View all →", "student", "tuition")}</div>${assessments[0] ? assessment(assessments[0]) : `<section class="card">${empty("Your assigned tuition will appear here.")}</section>`}</div><section class="card"><div class="section-head"><div><h2>Campus Apparel & Uniforms</h2><p>Ready for your next campus day</p></div>${link("Uniform Store →", "student", "store")}</div><div class="dashboard-products">${db().products.slice(0, 2).map((p) => `<article><img src="${esc(image(p.image))}" alt="${esc(p.name)}"><h3>${esc(p.name)}</h3><p>Sizes: ${esc(p.sizes.join(", "))}</p><div class="line"><b>${s.money(p.price)}</b>${button("Choose size", () => product(p.id))}</div></article>`).join("")}</div><div class="cart-total"><div><small>Selected items (${lines.reduce((n, l) => n + l.qty, 0)})</small><strong>${s.money(total)}</strong></div>${link("View Cart", "student", "cart", "button primary")}</div></section></div>`;
 }
 function storeCartLink() {
   const lines = user()?.role === "Student" ? db().carts[actor()] || [] : [];
   const count = lines.reduce((total, line) => total + line.qty, 0);
   const total = lines.reduce((sum, line) => sum + (db().products.find(product => product.id === line.productId)?.price || 0) * line.qty, 0);
-  return `<a class="button primary store-cart-link" href="${new URL("../pages/cart.html", import.meta.url).href}" aria-label="Shopping cart, ${count} items"><span>Shopping Cart</span><span class="cart-count">${count}</span><span>${s.money(total)}</span></a>`;
+  return `<a class="button primary store-cart-link" href="${new URL("../pages/orders.html#shopping-cart", import.meta.url).href}" aria-label="Shopping cart, ${count} items"><span>Shopping Cart</span><span class="cart-count">${count}</span><span>${s.money(total)}</span></a>`;
 }
 function store(target) {
   let query = "", program = "All", category = "All", sort = "Featured", savedOnly = false;
@@ -76,7 +79,7 @@ function product(id) {
 function cart(target) {
   const lines=(db().carts[actor()]||[]).map(l=>({...l,product:db().products.find(p=>p.id===l.productId)})).filter(l=>l.product);
   const total=lines.reduce((n,l)=>n+l.product.price*l.qty,0);
-  target.innerHTML=heading('Shopping Cart','Review your sizes and quantities before creating a checkout ticket.',link('Continue shopping','student','store','button'))+`<section class="card">${lines.length?`<div class="cart-items">${lines.map(l=>`<article class="cart-item"><img src="${esc(image(l.product.image))}" alt="${esc(l.product.name)}"><div><h3>${esc(l.product.name)}</h3><small>Size ${esc(l.size)} &middot; ${s.money(l.product.price)} each</small></div><label class="field"><span>Quantity</span><input aria-label="${esc(l.product.name)} quantity" type="number" value="${l.qty}" min="1" max="${l.product.stock[l.size]||0}" step="1" ${on(async e=>{if(!e.target.checkValidity()){e.target.reportValidity();return;}await act(()=>s.putCart(actor(),l.productId,l.size,Number(e.target.value)),'Cart updated.');},'change')}></label><b>${s.money(l.product.price*l.qty)}</b>${button('Remove',async()=>{await act(()=>s.putCart(actor(),l.productId,l.size,0));})}</article>`).join('')}</div><div class="cart-total"><div><small>Order total</small><strong>${s.money(total)}</strong></div>${button('Checkout ticket',()=>checkout(total),'primary')}</div>`:empty('Your cart is empty.')+link('Browse uniforms','student','store','button primary')}</section>`;
+  target.innerHTML=heading('Shopping Cart','Review your sizes and quantities before creating a checkout ticket.',link('Continue shopping','student','store','button'))+`<section class="card">${lines.length?`<div class="cart-items">${lines.map(l=>`<article class="cart-item"><img src="${esc(image(l.product.image))}" alt="${esc(l.product.name)}"><div><h3>${esc(l.product.name)}</h3><small>Size ${esc(l.size)} &middot; ${s.money(l.product.price)} each</small></div><label class="field"><span>Quantity</span><input aria-label="${esc(l.product.name)} quantity" type="number" value="${l.qty}" min="1" max="${l.product.stock[l.size]||0}" step="1" ${on(async e=>{if(!e.target.checkValidity()){e.target.reportValidity();return;}await act(()=>s.putCart(actor(),l.productId,l.size,Number(e.target.value)),'Cart updated.');},'change')}></label><b>${s.money(l.product.price*l.qty)}</b>${button('Remove',async()=>{await act(()=>s.putCart(actor(),l.productId,l.size,0));})}</article>`).join('')}</div><div class="cart-total"><div><small>Order total</small><strong>${s.money(total)}</strong></div>${button('Checkout ticket',()=>checkout(total),'primary')}</div>`:empty('Your cart is empty.')}</section>`;
 }
 function checkout(total) {
   let d;
@@ -86,24 +89,6 @@ function checkout(total) {
     const result=await act(()=>s.placeOrder(actor(),contact,method),'Order placed. Your ticket is in the cashier queue.');
     if(result.ok){d.close();go('student','orders');}
   })}`);
-}
-function profile(target) {
-  const u = user();
-  let avatar = u.avatar || "";
-  target.innerHTML = heading("My Profile", "Manage your account and checkout contact information.") + `<section class="card">${form(`<div class="profile-layout"><div class="form-grid">${field("Username", "username", u.username, "text", "readonly")}${field("Student number", "studentNumber", u.studentNumber, "text", "readonly")}${contactFields(u)}${select("Gender", "gender", ["Male", "Female", "Other", "Prefer not to say"], u.gender || "Prefer not to say")}${field("Date of birth", "dateOfBirth", u.dateOfBirth || "", "date", `max="${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}"`)}</div><div class="profile-photo"><div id="avatar-preview">${avatar ? `<img src="${esc(image(avatar))}" alt="Profile preview">` : `<span>${esc(u.name[0])}</span>`}</div><label class="field"><span>Select profile image</span><input type="file" accept="image/jpeg,image/png" ${on(async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    if (!["image/jpeg", "image/png"].includes(file.type) || file.size > 1024 * 1024) throw Error("Choose a JPEG or PNG image up to 1 MB.");
-    avatar = await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = () => reject(Error("Could not open image."));
-      reader.readAsDataURL(file);
-    });
-    target.querySelector("#avatar-preview").innerHTML = `<img src="${esc(avatar)}" alt="Profile preview">`;
-  }, "change")}></label><small>JPEG / PNG · Maximum 1 MB</small></div></div>${submit("Save profile")}`, async (data) => {
-    if (confirm("Save your profile details?")) await act(() => s.updateProfile(actor(), { ...data, avatar }), "Profile saved.");
-  })}</section>`;
 }
 export {
   product,

@@ -6,7 +6,8 @@
   gap: 15px;
 }
 .dashboard-products article {
-  background: #f7f9fb;
+  background: var(--surface-soft, #f7f9fb);
+  color: var(--text-color, #19354b);
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 13px;

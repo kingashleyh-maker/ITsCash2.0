@@ -135,10 +135,10 @@ function accounts(target) {
     target.innerHTML = empty("Only administrators can manage accounts.");
     return;
   }
-  target.innerHTML = heading("Account Management", "Create student and staff access for this browser.") + `<section class="card">${form(`<div class="form-grid">${field("Full name", "name", "", "text", "required")}${field("Username", "username", "", "text", 'required pattern="[A-Za-z0-9._-]{3,50}"')}${field("Initial password", "password", "", "password", 'required minlength="8"')}${select("Role", "role", ["Student", "Cashier", "Proware", "Admin"])}${field("Student number", "studentNumber")}${field("Course / program", "course")}${field("Year level", "year")}${field("Email", "email", "", "email")}${field("Phone", "phone")}</div>${submit("Create account")}`, async (d) => {
+  target.innerHTML = heading("Account Management", "Create student and staff access for this browser.") + `<section class="card">${form(`<div class="form-grid">${field("Full name", "name", "", "text", "required")}${field("Initial password", "password", "", "password", 'required minlength="8"')}${select("Role", "role", ["Student", "Cashier", "Proware", "Admin"])}${field("Student number", "studentNumber")}${field("Course / program", "course")}${field("Year level", "year")}${field("School email", "email", "", "email", "required")}${field("Phone", "phone")}</div>${submit("Create account")}`, async (d) => {
     const r = await act(() => s.register({ ...d, password: void 0 }, d.password, actor()), "Account created.");
     if (r.ok) accounts(target);
-  })}</section><section class="card">${table(["Name", "Username", "Role", "Student number", "Status"], db().accounts.map((a) => cell(esc(a.name), esc(a.username), esc(a.role), esc(a.studentNumber), badge(a.active !== false ? "Active" : "Disabled"))))}</section>`;
+  })}</section><section class="card">${table(["Name", "School email", "Role", "Student number", "Status"], db().accounts.map((a) => cell(esc(a.name), esc(a.email), esc(a.role), esc(a.studentNumber), badge(a.active !== false ? "Active" : "Disabled"))))}</section>`;
 }
 export {
   accounts,

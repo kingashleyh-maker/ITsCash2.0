@@ -1,15 +1,19 @@
 import * as s from "./store.js";
+import { loadPreferences } from "./preferences.js";
+import { imageCutouts } from "../data/image-cutouts.js";
 const base = new URL("../../", import.meta.url);
 const role = document.body.dataset.role;
 const page = document.body.dataset.page;
 const db = () => s.getState();
 const actor = () => sessionStorage.getItem("itscash_vanilla_actor") || "";
 const user = () => db().accounts.find((a) => a.id === actor() && a.active !== false);
+const workspaceForRole = (accountRole) => ({ Student: "student", Cashier: "cashier", Proware: "proware", "Inventory Staff": "proware", Admin: "cashier" })[accountRole];
 const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 const url = (r = "", p = "overview") => {
   const path = !r ? "login/pages/index.html"
-    : p === "login" ? `login/pages/${r}-login.html`
+    : p === "login" ? "login/pages/index.html"
     : r === "student" && p === "register" ? "login/pages/register.html"
+    : r === "student" && p === "cart" ? "student/pages/orders.html#shopping-cart"
     : `${r}/pages/${p}.html`;
   return new URL(path, base).href;
 };
@@ -25,6 +29,10 @@ function on(fn, event = "click") {
 }
 function button(label, fn, cls = "") {
   return `<button type="button" class="${esc(cls)}" ${on(fn)}>${esc(label)}</button>`;
+}
+// SVG markup is supplied only by our own icon definitions; labels remain escaped.
+function iconButton(label, svg, fn, cls = "") {
+  return `<button type="button" class="${esc(cls)}" aria-label="${esc(label)}" title="${esc(label)}" ${on(fn)}>${svg}</button>`;
 }
 function link(label, r, p, cls = "") {
   return `<a class="${esc(cls)}" href="${url(r, p)}">${esc(label)}</a>`;
@@ -63,6 +71,7 @@ const badge = (text) => `<span class="badge ${/Successful|Paid|Claimed|In Stock|
 const table = (headers, rows) => `<div class="table-wrap"><table><thead><tr>${headers.map((h) => `<th scope="col">${esc(h)}</th>`).join("")}</tr></thead><tbody>${rows.join("")}</tbody></table>${rows.length ? "" : empty()}</div>`;
 const cell = (...values) => `<tr>${values.map((v) => `<td>${v ?? ""}</td>`).join("")}</tr>`;
 function toast(message, error = false) {
+  if (!error && !loadPreferences().showMessages) return;
   const host = document.getElementById("toast-root");
   host.innerHTML = `<div class="toast ${error ? "error" : ""}" role="${error ? "alert" : "status"}"><span>${esc(message)}</span>${button("×", () => host.replaceChildren())}</div>`;
   clearTimeout(toast.timer);
@@ -108,10 +117,13 @@ function modal(title, content, { wide = false, printable = false } = {}) {
 function filters(content, fn) {
   return form(`<div class="filters">${content}${submit("Apply filters")}</div>`, fn);
 }
-const contactFields = (u) => ["name", "email", "phone", "course", "year"].map((k) => field({ name: "Full name", email: "Email", phone: "Phone", course: "Course / program", year: "Year level" }[k], k, u?.[k] || "", k === "email" ? "email" : "text", "required")).join("");
+const contactFields = (u, lockEmail = false) => ["name", "email", "phone", "course", "year"].map((k) => field({ name: "Full name", email: "Email", phone: "Phone", course: "Course / program", year: "Year level" }[k], k, u?.[k] || "", k === "email" ? "email" : "text", `required${lockEmail && k === "email" ? " readonly" : ""}`)).join("");
 const image = (path) => {
   if (!path) return "";
-  if (path.includes("/assets/images/")) return new URL(`assets/images/${path.split("/").at(-1)}`, base).href;
+  if (path.includes("/assets/images/")) {
+    const filename = path.split("/").at(-1);
+    return new URL(`assets/images/${imageCutouts[filename] || filename}`, base).href;
+  }
   return /^(data:image\/(png|jpeg);base64,|https?:)/.test(path) ? path : "";
 };
 for (const type of ["click", "submit", "change", "input"]) document.addEventListener(type, async (e) => {
@@ -131,6 +143,8 @@ function guard() {
   return !!u && (role === "student" ? u.role === "Student" : role === "cashier" ? ["Cashier", "Admin"].includes(u.role) : ["Proware", "Inventory Staff", "Admin"].includes(u.role));
 }
 export {
+  iconButton,
+  workspaceForRole,
   act,
   actor,
   badge,

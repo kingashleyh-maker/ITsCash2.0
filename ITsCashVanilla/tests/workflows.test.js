@@ -40,10 +40,10 @@ function fixture() {
   s.commit((db) => {
     db.accounts = [
       student,
-      { ...student, id: "other", username: "two", studentNumber: "2026-2" },
-      { id: "cashier", role: "Cashier", name: "Cashier", active: true },
-      { id: "proware", role: "Proware", name: "Proware", active: true },
-      { id: "admin", role: "Admin", name: "Administrator", active: true },
+      { ...student, id: "other", username: "two", email: "two@example.com", studentNumber: "2026-2" },
+      { id: "cashier", username: "cashier", role: "Cashier", name: "Cashier", active: true },
+      { id: "proware", username: "proware", role: "Proware", name: "Proware", active: true },
+      { id: "admin", username: "admin", role: "Admin", name: "Administrator", active: true },
     ];
     db.products[0].price = 72000;
     db.products[0].stock = { M: 10, Unassigned: 0 };
@@ -318,36 +318,92 @@ test("legacy migration preserves stock, cents ledger, reservation flag, and unto
     old,
   );
 });
-test("registration hashes passwords, enforces uniqueness, and restricts role sign-in", async () => {
+test("admin provisioning hashes passwords and students sign in by email", async () => {
+  fixture();
+  const fields = {
+    ...contact,
+    email: " Assigned@School.edu.ph ",
+    username: "student.test",
+    studentNumber: "123",
+    role: "Student",
+  };
   const id = await s.register(
-    {
-      ...contact,
-      username: "student.test",
-      studentNumber: "123",
-      role: "Student",
-    },
+    fields,
     "Password123!",
+    "admin",
   );
-  assert.equal(await s.signIn("student.test", "Password123!", "student"), id);
-  assert.equal(s.getState().accounts[0].password, undefined);
-  assert.ok(s.getState().accounts[0].salt);
-  await assert.rejects(s.signIn("student.test", "bad", "student"), /incorrect/);
+  assert.equal(await s.signIn(" ASSIGNED@SCHOOL.EDU.PH ", "Password123!", "student"), id);
+  const account = s.getState().accounts.find(a => a.id === id);
+  assert.equal(account.email, "assigned@school.edu.ph");
+  assert.equal(account.password, undefined);
+  assert.ok(account.salt);
+  await assert.rejects(s.signIn(account.email, "bad", "student"), /incorrect/);
+  await assert.rejects(s.signIn("student.test", "Password123!", "student"), /incorrect/);
+  await assert.rejects(s.signIn("unknown@school.edu.ph", "Password123!", "student"), /incorrect/);
   await assert.rejects(
-    s.signIn("student.test", "Password123!", "cashier"),
+    s.signIn(account.email, "Password123!", "cashier"),
     /cannot access/,
   );
   await assert.rejects(
     s.register(
-      {
-        ...contact,
-        username: "student.test",
-        studentNumber: "456",
-        role: "Student",
-      },
+      { ...fields, username: "different.student", studentNumber: "456" },
       "Password123!",
+      "admin",
     ),
-    /already registered/,
+    /school email is already registered/,
   );
+  s.commit(db => { db.accounts.find(a => a.id === id).active = false; });
+  await assert.rejects(s.signIn(account.email, "Password123!", "student"), /incorrect/);
+});
+test("students cannot self-register, including when no accounts exist", async () => {
+  const fields = { ...student, username: "new.student", email: "new@school.edu.ph" };
+  await assert.rejects(s.register(fields, "Password123!"), /authorized/);
+  assert.equal(s.getState().accounts.length, 0);
+  fixture();
+  const before = JSON.stringify(s.getState());
+  for (const actor of [null, "student", "cashier", "proware", "missing"]) {
+    await assert.rejects(s.register(fields, "Password123!", actor), /authorized/);
+  }
+  assert.equal(JSON.stringify(s.getState()), before);
+});
+test("student provisioning requires an email and prevents duplicate usernames", async () => {
+  fixture();
+  for (const email of ["", "invalid", "a@@school.edu.ph", "a b@school.edu.ph"]) {
+    await assert.rejects(s.register({ ...student, username: "new.student", email }, "Password123!", "admin"), /school email/);
+  }
+  await assert.rejects(s.register({ ...student, email: "new@school.edu.ph" }, "Password123!", "admin"), /username is already registered/);
+});
+test("students edit only username, phone, gender and birthdate; school identity stays unchanged", () => {
+  fixture();
+  s.updateProfile("student", { username: "new.student", phone: "09998887777", gender: "Other", dateOfBirth: "2001-05-14",
+    name: "Forged name", email: "other@school.edu.ph", studentNumber: "Forged number", course: "Forged course", year: "Forged year", role: "Admin", avatar: "Forged photo" });
+  const updated = s.getState().accounts.find(a => a.id === "student");
+  assert.equal(updated.username, "new.student");
+  assert.equal(updated.phone, "09998887777");
+  assert.equal(updated.gender, "Other");
+  assert.equal(updated.dateOfBirth, "2001-05-14");
+  for (const key of ["name", "email", "studentNumber", "course", "year", "role", "avatar"])
+    assert.equal(updated[key], student[key]);
+  assert.throws(() => s.updateProfile("student", { username: "two" }), /already registered/);
+  assert.throws(() => s.updateProfile("student", { username: "bad username" }), /3–50/);
+  assert.throws(() => s.updateProfile("student", { dateOfBirth: "2999-01-01" }), /valid date/);
+  assert.throws(() => s.updateProfile("cashier", { username: "cashier.alias" }), /authorized/);
+});
+test("all roles can change only their own picture through the demo picture editor", () => {
+  fixture();
+  const avatar = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
+  s.updateAvatar("proware", avatar);
+  assert.equal(s.getState().accounts.find(a => a.id === "proware").avatar, avatar);
+  assert.equal(s.getState().accounts.find(a => a.id === "student").avatar, undefined);
+  for (const actor of ["student", "cashier", "admin"]) {
+    s.updateAvatar(actor, avatar);
+    assert.equal(s.getState().accounts.find(a => a.id === actor).avatar, avatar);
+    s.updateAvatar(actor, "");
+  }
+  assert.throws(() => s.updateAvatar("missing", avatar), /authorized/);
+  assert.throws(() => s.updateAvatar("proware", "data:image/svg+xml;base64,PHN2Zz4="), /JPEG or PNG/);
+  s.updateAvatar("proware", "");
+  assert.equal(s.getState().accounts.find(a => a.id === "proware").avatar, "");
 });
 test("corrupt saved records are not silently replaced", () => {
   localStorage.setItem(s.KEY, "{bad");
@@ -363,10 +419,16 @@ test("role accounts initialize once and enforce workspace access", async () => {
     ["cashier", "Cashier123!"],
     ["proware", "Proware123!"],
   ]) {
-    const accountId = await s.signIn(username, password, username);
+    const identifier = `${username}@example.com`;
+    const accountId = await s.signIn(identifier, password, username);
     assert.ok(accountId);
+    assert.equal(await s.signIn(identifier, password), accountId);
+    await assert.rejects(s.signIn(identifier, password, "unrecognized"), /cannot access/);
+    assert.equal(await s.signIn(` ${identifier.toUpperCase()} `, password, username), accountId);
+    await assert.rejects(s.signIn(username, password, username), /incorrect/);
+    await assert.rejects(s.signIn(identifier, "wrong-password", username), /incorrect/);
     const other = username === "student" ? "cashier" : "student";
-    await assert.rejects(s.signIn(username, password, other), /cannot access/);
+    await assert.rejects(s.signIn(identifier, password, other), /cannot access/);
   }
   const snapshot = JSON.stringify(s.getState());
   await s.initializeAccounts();
@@ -379,9 +441,10 @@ test("requested staff accounts upgrade saved browsers and retain records", async
   s.commit(db => { db.roleAccountsInitialized = true; db.notices.push({id: "preserved-notice"}); });
   await s.initializeAccounts();
   for (const [username, workspace] of [["Cashier2", "cashier"], ["Proware2", "proware"]]) {
-    const id = await s.signIn(username, "123456789", workspace);
+    const email = `${username}@example.com`;
+    const id = await s.signIn(email, "123456789", workspace);
     assert.ok(id);
-    await assert.rejects(s.signIn(username, "123456789", workspace === "cashier" ? "proware" : "cashier"), /cannot access/);
+    await assert.rejects(s.signIn(email, "123456789", workspace === "cashier" ? "proware" : "cashier"), /cannot access/);
     const account = s.getState().accounts.find(a => a.id === id);
     assert.equal(account.password, undefined);
     assert.ok(account.hash);
@@ -390,6 +453,41 @@ test("requested staff accounts upgrade saved browsers and retain records", async
   const snapshot = JSON.stringify(s.getState());
   await s.initializeAccounts();
   assert.equal(JSON.stringify(s.getState()), snapshot);
+});
+
+test("email-only admin setup and staff provisioning enforce unique emails across roles", async () => {
+  const admin = await s.register({ role: "Admin", name: "School Admin", email: " ADMIN@SCHOOL.EDU.PH " }, "Admin123!");
+  for (const workspace of ["cashier", "proware"]) {
+    assert.equal(await s.signIn("admin@school.edu.ph", "Admin123!", workspace), admin);
+  }
+  for (const role of ["Cashier", "Proware"]) {
+    const fields = { role, name: `${role} Staff`, email: `${role}@school.edu.ph` };
+    await assert.rejects(s.register(fields, "Password123!"), /authorized/);
+    for (const email of ["", "invalid", "staff@@school.edu.ph"]) {
+      await assert.rejects(s.register({ ...fields, email }, "Password123!", admin), /school email/);
+    }
+    const accountId = await s.register(fields, "Password123!", admin);
+    assert.equal(await s.signIn(fields.email, "Password123!", role.toLowerCase()), accountId);
+    await assert.rejects(s.register({ ...fields, email: " ADMIN@SCHOOL.EDU.PH " }, "Password123!", admin), /email is already registered/);
+    s.commit(db => { db.accounts.find(a => a.id === accountId).active = false; });
+    await assert.rejects(s.signIn(fields.email, "Password123!", role.toLowerCase()), /incorrect/);
+  }
+});
+
+test("existing staff sign in by their saved email without resetting passwords or records", async () => {
+  await s.initializeAccounts();
+  s.commit(db => {
+    db.accounts.find(a => a.username === "cashier2").email = "saved.cashier@school.edu.ph";
+    db.accounts.find(a => a.username === "proware2").email = "saved.proware@school.edu.ph";
+    db.notices.push({ id: "keep-this-notice" });
+  });
+  const before = JSON.stringify(s.getState());
+  await s.initializeAccounts();
+  assert.equal(JSON.stringify(s.getState()), before);
+  for (const workspace of ["cashier", "proware"]) {
+    assert.ok(await s.signIn(`saved.${workspace}@school.edu.ph`, "123456789", workspace));
+    await assert.rejects(s.signIn(`${workspace}2@example.com`, "123456789", workspace), /incorrect/);
+  }
 });
 
 
